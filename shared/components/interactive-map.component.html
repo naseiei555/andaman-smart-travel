@@ -1,0 +1,67 @@
+<section class="interactive-map" aria-labelledby="interactive-map-title">
+  <header class="interactive-map__header">
+    <div>
+      <span class="map-eyebrow">{{ text('FIND YOUR WAY SOUTH', 'ค้นหาเส้นทางภาคใต้') }}</span>
+      <h2 id="interactive-map-title">{{ text('Explore the', 'สำรวจ') }} <em>{{ text('map', 'แผนที่') }}</em></h2>
+      <p>{{ text('Select a destination marker to view its details and plan a route.', 'เลือกหมุดสถานที่เพื่อดูรายละเอียดและวางแผนเส้นทาง') }}</p>
+    </div>
+    <button class="map-reset" type="button" (click)="resetMap()">{{ text('Reset view', 'รีเซ็ตแผนที่') }}</button>
+  </header>
+
+  <div class="interactive-map__layout">
+    <div class="interactive-map__map-wrap">
+      <div
+        #mapCanvas
+        class="interactive-map__canvas"
+        role="application"
+        [attr.aria-label]="text('Interactive map of southern Thailand destinations. Use arrow keys to move the map and select a marker.', 'แผนที่สถานที่ท่องเที่ยวภาคใต้ ใช้ปุ่มลูกศรเพื่อเลื่อนแผนที่และเลือกหมุด')"
+      ></div>
+      @if (mapError()) {
+        <p class="interactive-map__error" role="status">{{ text(mapError(), 'ไม่สามารถโหลดแผนที่ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต') }}</p>
+      }
+    </div>
+
+    <aside class="map-place-card" aria-live="polite" [attr.aria-label]="text('Selected destination', 'สถานที่ที่เลือก')">
+      @if (selectedPlace(); as place) {
+        <div class="map-place-card__image">
+          <img
+            [src]="place.image.url"
+            [alt]="place.image.alt"
+            loading="lazy"
+            decoding="async"
+            (error)="handleImageError($event, place.image.fallbackUrl)"
+          />
+          <span>{{ localizedProvince(place.province) }}</span>
+        </div>
+        <div class="map-place-card__body">
+          <div class="map-place-card__eyebrow">{{ localizedCategory(place.category) }} · {{ text('SOUTHERN THAILAND', 'ภาคใต้') }}</div>
+          <h3>{{ localizedName(place.name) }}</h3>
+          <div class="map-place-card__rating"><span aria-hidden="true">★</span> {{ place.rating }} <small>{{ text('sample rating', 'คะแนนตัวอย่าง') }}</small></div>
+          <app-live-weather [destinationId]="place.id" [compact]="true" [language]="language()" />
+          <div class="map-place-card__distance">
+            <span aria-hidden="true">↔</span>
+            <span><strong>{{ distanceFromPhiPhi(place) }}</strong><small>{{ text('straight-line distance from Phi Phi Islands', 'ระยะทางเส้นตรงจากหมู่เกาะพีพี') }}</small></span>
+          </div>
+          <p class="map-place-card__credit">
+            Photo: <a [href]="place.image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ place.image.photographer }}</a>
+            · <a [href]="place.image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ place.image.license }}</a>
+          </p>
+          <a class="map-place-card__details" [routerLink]="['/places', place.id]">{{ text('View details', 'ดูรายละเอียด') }} <span aria-hidden="true">↗</span></a>
+          <a class="map-place-card__directions" [href]="directionsUrl(place)" target="_blank" rel="noopener noreferrer">{{ text('Directions on Google Maps', 'เส้นทางใน Google Maps') }} ↗</a>
+        </div>
+      }
+    </aside>
+  </div>
+
+  <nav class="map-place-list" [attr.aria-label]="text('Select a destination', 'เลือกสถานที่')">
+    @for (place of destinations; track place.id) {
+      <button
+        type="button"
+        [class.is-selected]="selectedPlaceId() === place.id"
+        [attr.aria-pressed]="selectedPlaceId() === place.id"
+        (click)="selectPlace(place.id)"
+      >{{ localizedName(place.name) }}</button>
+    }
+  </nav>
+  <p class="map-disclaimer">คะแนนเป็นข้อมูลตัวอย่าง · ระยะทางเป็นเส้นตรง ไม่ใช่ระยะทางตามถนนหรือเส้นทางเรือ · สภาพอากาศจาก Open-Meteo</p>
+</section>

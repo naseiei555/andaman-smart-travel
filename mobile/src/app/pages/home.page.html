@@ -1,0 +1,261 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Discover Southern Thailand</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="hero">
+    <img
+      class="hero__photo"
+      [src]="heroImage.url"
+      [srcset]="responsiveImageSrcset(heroImage.url)"
+      sizes="100vw"
+      [alt]="heroImage.alt"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      (error)="handleImageError($event, heroImage.fallbackUrl)"
+    />
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">Travel smarter</p>
+      <h1>Discover Southern Thailand</h1>
+      <p class="hero__subtitle">ค้นพบสถานที่ท่องเที่ยวที่เหมาะกับคุณ</p>
+      <ion-searchbar placeholder="คุณอยากไปเที่ยวที่ไหน?"></ion-searchbar>
+      <div class="hero__actions">
+        <ion-button fill="solid" class="primary-btn">Explore Now</ion-button>
+        <ion-button fill="clear" class="secondary-btn" routerLink="/tabs/trips">Plan My Trip</ion-button>
+      </div>
+    </div>
+    <div class="hero__credit">
+      Photo: <a [href]="heroImage.sourceUrl" target="_blank" rel="noopener noreferrer">{{ heroImage.photographer }}</a>
+      · <a [href]="heroImage.licenseUrl" target="_blank" rel="noopener noreferrer">{{ heroImage.license }}</a>
+    </div>
+  </section>
+
+  <section class="section weather-home" aria-labelledby="weather-home-title">
+    <div class="section__header">
+      <div>
+        <p class="section__eyebrow">PLAN A PERFECT DAY</p>
+        <h2 id="weather-home-title">Weather today</h2>
+      </div>
+    </div>
+    <app-live-weather [destinationId]="'phi-phi'" />
+  </section>
+
+  <section class="section">
+    <div class="section__header">
+      <h2>Pick your vibe</h2>
+      <span>Select one or more interests</span>
+    </div>
+    <div class="chip-row">
+      @for (interest of interests; track interest) {
+        <button
+          class="interest-button"
+          [class.is-selected]="isInterestSelected(interest)"
+          [attr.aria-pressed]="isInterestSelected(interest)"
+          [disabled]="isInterestSelected(interest) && selectedRecommendationInterests().length === 1"
+          (click)="toggleInterest(interest)"
+        >
+          {{ interest }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="section province-section" id="provinces" aria-labelledby="provinces-title">
+    <div class="section__header">
+      <div>
+        <p class="section__eyebrow">FIVE PROVINCES, ONE COASTLINE</p>
+        <h2 id="provinces-title">Explore Southern Thailand</h2>
+      </div>
+    </div>
+    <div class="province-grid" aria-label="Explore Southern Thailand provinces">
+      @for (province of provinceCards; track province.province; let index = $index) {
+        <article class="province-card" [class.is-active]="selectedProvince() === province.province">
+          <div class="province-card__image">
+            <img
+              [src]="province.image.url"
+              [srcset]="responsiveImageSrcset(province.image.url)"
+              sizes="50vw"
+              [alt]="province.image.alt"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event, province.image.fallbackUrl)"
+            />
+            <span class="province-card__number">{{ (index + 1).toString().padStart(2, '0') }}</span>
+          </div>
+          <div class="province-card__body">
+            <span class="province-card__count">
+              {{ province.placeCount }} {{ province.placeCount === 1 ? 'PLACE' : 'PLACES' }}
+            </span>
+            <h3>{{ province.province }}</h3>
+            <p>{{ province.description }}</p>
+            <button
+              type="button"
+              class="province-card__action"
+              [attr.aria-pressed]="selectedProvince() === province.province"
+              (click)="selectProvince(province.province)"
+            >
+              {{ selectedProvince() === province.province ? 'Showing' : 'Explore' }} {{ province.province }}
+              <span aria-hidden="true">↗</span>
+            </button>
+            <span class="province-card__credit">
+              @if (province.image.source === 'Andaman Smart Travel') {
+                {{ province.image.license }} by {{ province.image.photographer }}
+              } @else {
+                Photo: <a [href]="province.image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ province.image.photographer }}</a>
+                · <a [href]="province.image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ province.image.license }}</a>
+              }
+            </span>
+          </div>
+        </article>
+      }
+    </div>
+    @if (selectedProvince() !== 'All') {
+      <button class="province-reset" type="button" (click)="showAllProvinces()">Show all destinations</button>
+    }
+  </section>
+
+  <section class="section" id="recommendations">
+    <div class="section__header">
+      <h2>Recommended for you</h2>
+      @if (selectedProvince() !== 'All') {
+        <span class="province-filter-label">{{ selectedProvince() }}</span>
+      }
+    </div>
+    @if (recommendationsLoading()) {
+      <p class="recommendation-status" role="status">Updating recommendations…</p>
+    }
+    @if (recommendationsError()) {
+      <div class="recommendation-error" role="alert">
+        <span>Recommendations are unavailable right now. Check your connection and try again.</span>
+        <ion-button fill="clear" (click)="refreshRecommendations()">Retry</ion-button>
+      </div>
+    }
+    @if (recommendationsOffline()) {
+      <p class="recommendation-status" role="status">Showing on-device recommendations while the travel service is unavailable.</p>
+    }
+    @if (selectedProvince() !== 'All') {
+      <p class="recommendation-status" role="status">Places in {{ selectedProvince() }} are ranked on this device using your interests.</p>
+    }
+
+    <div class="card-list">
+      @for (place of visibleDestinations(); track place.id) {
+        <ion-card>
+          <div class="card__image">
+            <img
+              class="card__photo"
+              [src]="place.image.url"
+              [srcset]="responsiveImageSrcset(place.image.url)"
+              sizes="90vw"
+              [alt]="place.image.alt"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event, place.image.fallbackUrl)"
+            />
+            <span class="recommendation-match">{{ place.matchScore }}% match</span>
+            <button type="button" class="favorite-btn" (click)="toggleFavorite(place.id)" [attr.aria-label]="favoritesService.isFavorite(place.id) ? 'Remove from favorites' : 'Add to favorites'">
+              <ion-icon [name]="favoritesService.isFavorite(place.id) ? 'heart' : 'heart-outline'"></ion-icon>
+            </button>
+          </div>
+          <ion-card-header>
+            <div class="card__meta">
+              <span class="card__tag">{{ place.category }}</span>
+              <span class="card__rating"><ion-icon name="star"></ion-icon> {{ place.rating }}</span>
+            </div>
+            <ion-card-title>{{ place.name }}</ion-card-title>
+            <p class="card__location">{{ place.province }}</p>
+          </ion-card-header>
+          <ion-card-content>
+            <p>{{ place.description }}</p>
+            <p class="recommendation-reason">{{ place.reason }}</p>
+            <p class="image-credit">
+              Photo: <a [href]="place.image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ place.image.photographer }}</a>
+              · <a [href]="place.image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ place.image.license }}</a>
+            </p>
+            <div class="card__footer">
+              <span>{{ place.estimatedCost }}</span>
+            </div>
+            <a class="card__details" [routerLink]="['/places', place.id]">Explore details ↗</a>
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  </section>
+
+  <section class="section video-section" aria-labelledby="experience-title">
+    <div class="section__header">
+      <div>
+        <p class="section__eyebrow">A LITTLE PREVIEW OF PARADISE</p>
+        <h2 id="experience-title">Experience Southern Thailand</h2>
+      </div>
+    </div>
+    <p class="video-section__subtitle">สัมผัสบรรยากาศก่อนออกเดินทาง</p>
+    <div class="video-grid">
+      @for (video of videos; track video.id) {
+        <article class="video-card">
+          <button
+            type="button"
+            class="video-card__trigger"
+            [attr.aria-label]="'Play ' + video.title"
+            (click)="openVideo(video)"
+          >
+            <span class="video-card__thumbnail">
+              <img
+                [src]="video.thumbnail"
+                [alt]="'Video thumbnail for ' + video.title"
+                loading="lazy"
+                decoding="async"
+                (error)="handleImageError($event, video.fallbackUrl)"
+              />
+              <span class="video-card__play" aria-hidden="true">▶</span>
+            </span>
+            <span class="video-card__caption">
+              <strong>{{ video.province }}</strong>
+              <span>{{ video.title }}</span>
+            </span>
+          </button>
+          <a class="video-card__source" [href]="video.sourceUrl" target="_blank" rel="noopener noreferrer">
+            Video: {{ video.channel }} · YouTube ↗
+          </a>
+        </article>
+      }
+    </div>
+    <p class="video-section__note">วิดีโอฝังจากช่อง YouTube ต้นทางเมื่อกดเล่น</p>
+  </section>
+
+  <ion-modal
+    class="video-modal"
+    [isOpen]="activeVideo() !== null"
+    [backdropDismiss]="true"
+    (didDismiss)="closeVideo()"
+  >
+    <ng-template>
+      @if (activeVideo(); as video) {
+        <div class="video-modal__content">
+          <header class="video-modal__header">
+            <span>{{ video.province }} · {{ video.channel }}</span>
+            <button type="button" aria-label="Close video" (click)="closeVideo()">×</button>
+          </header>
+          <div class="video-modal__player">
+            <iframe
+              [src]="videoEmbedUrl(video)"
+              [title]="video.title"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="video-modal__details">
+            <h2>{{ video.title }}</h2>
+            <p>{{ video.description }}</p>
+            <a [href]="video.sourceUrl" target="_blank" rel="noopener noreferrer">Open source on YouTube ↗</a>
+          </div>
+        </div>
+      }
+    </ng-template>
+  </ion-modal>
+</ion-content>

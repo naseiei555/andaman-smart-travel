@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Krabi image unavailable</title>
+  <desc id="desc">A simple original limestone coast illustration shown only when the Krabi photo cannot load.</desc>
+  <rect width="960" height="600" fill="#e5f4f4"/>
+  <path d="M0 367c138-35 255-22 367 4 141 32 257 17 369-16 86-25 152-23 224-4v249H0z" fill="#48cae4" opacity=".68"/>
+  <path d="M88 368 156 152l84 216zm183 4 101-283 109 282zm291-3 80-211 91 216z" fill="#80b59d"/>
+  <path d="M0 460c197-41 306-1 464 14 171 16 283-32 496-22v148H0z" fill="#0077b6" opacity=".56"/>
+  <text x="50%" y="83%" fill="#023e8a" font-family="Arial,sans-serif" font-size="34" text-anchor="middle">Krabi · photo unavailable</text>
+</svg>

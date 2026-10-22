@@ -1,0 +1,126 @@
+.favorites-page {
+  padding: 22px 16px 32px;
+}
+
+.favorites-heading {
+  margin: 4px 0 20px;
+}
+
+.favorites-eyebrow,
+.favorite-location {
+  margin: 0 0 5px;
+  color: var(--ion-color-medium-shade);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.favorites-heading h1 {
+  margin: 0;
+  color: var(--ion-text-color);
+  font-size: clamp(1.8rem, 7vw, 2.5rem);
+}
+
+.favorites-heading h1 em {
+  color: var(--ion-color-primary);
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+
+.favorites-heading > p:last-child {
+  margin: 8px 0 0;
+  color: var(--ion-color-medium-shade);
+  font-size: 0.85rem;
+}
+
+.favorite-list {
+  display: grid;
+  gap: 16px;
+}
+
+.favorite-list ion-card {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(9, 42, 70, 0.08);
+}
+
+.favorite-image {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+  background: var(--color-sand, #e9e4d7);
+}
+
+.favorite-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: #c64155;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.favorite-location {
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.favorite-cost {
+  color: var(--ion-color-medium-shade);
+  font-size: 0.82rem;
+}
+
+.favorite-details {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--ion-color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.favorites-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: 36px;
+  padding: 36px 20px;
+  border: 1px dashed rgba(2, 62, 138, 0.24);
+  border-radius: 18px;
+  color: var(--ion-color-medium-shade);
+  text-align: center;
+}
+
+.favorites-empty ion-icon {
+  color: var(--ion-color-primary);
+  font-size: 2.5rem;
+}
+
+.favorites-empty h2,
+.favorites-empty p {
+  margin: 0;
+}
+
+.favorites-empty h2 {
+  color: var(--ion-text-color);
+  font-size: 1.2rem;
+}
+
+.favorites-empty p {
+  max-width: 320px;
+  font-size: 0.88rem;
+}

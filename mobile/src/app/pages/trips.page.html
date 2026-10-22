@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Trip planner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="trip-page">
+    <header class="trip-heading">
+      <p>MAKE IT YOURS</p>
+      <h1>Your Southern Thailand <em>trip</em></h1>
+      <span>Build a simple itinerary and organize places by day.</span>
+    </header>
+
+    <section class="trip-settings" aria-label="Trip details">
+      <label>
+        <span><ion-icon aria-hidden="true" name="calendar"></ion-icon> Start date</span>
+        <input
+          type="date"
+          [value]="tripPlanService.plan().startDate"
+          [min]="todayDate()"
+          (change)="updateStartDate($event)"
+        />
+      </label>
+      <label>
+        <span>Trip length</span>
+        <select [value]="tripPlanService.plan().durationDays" (change)="updateDuration($event)">
+          @for (day of tripDays; track day) {
+            <option [value]="day">{{ day }} {{ day === 1 ? 'day' : 'days' }}</option>
+          }
+        </select>
+      </label>
+      <label class="add-destination">
+        <span><ion-icon aria-hidden="true" name="location"></ion-icon> Add a destination</span>
+        <select [disabled]="availableDestinations().length === 0" (change)="addDestination($event)">
+          <option value="">Choose a place…</option>
+          @for (place of availableDestinations(); track place.id) {
+            <option [value]="place.id">{{ place.name }} · {{ place.province }}</option>
+          }
+        </select>
+      </label>
+    </section>
+
+    @if (plannedStops().length) {
+      <div class="trip-list-heading">
+        <h2>Your itinerary</h2>
+        <ion-button fill="clear" color="danger" (click)="tripPlanService.clearPlan()">Clear</ion-button>
+      </div>
+      <ol class="trip-stop-list">
+        @for (stop of plannedStops(); track stop.destinationId) {
+          <li class="trip-stop">
+            <img
+              [src]="stop.place.image.url"
+              [alt]="stop.place.image.alt"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event, stop.place.image.fallbackUrl)"
+            />
+            <div class="trip-stop__details">
+              <span>{{ stop.place.province }} · {{ stop.place.category }}</span>
+              <strong>{{ stop.place.name }}</strong>
+              <a [routerLink]="['/places', stop.place.id]">Destination details ↗</a>
+            </div>
+            <label class="trip-stop__day">
+              Visit
+              <select [value]="stop.day" (change)="assignDay($event, stop.destinationId)">
+                @for (day of tripDays.slice(0, tripPlanService.plan().durationDays); track day) {
+                  <option [value]="day">Day {{ day }}</option>
+                }
+              </select>
+            </label>
+            <button
+              class="trip-stop__remove"
+              type="button"
+              [attr.aria-label]="'Remove ' + stop.place.name + ' from itinerary'"
+              (click)="tripPlanService.removeStop(stop.destinationId)"
+            ><ion-icon aria-hidden="true" name="close"></ion-icon></button>
+          </li>
+        }
+      </ol>
+    } @else {
+      <section class="trip-empty">
+        <span class="trip-empty__icon" aria-hidden="true">✦</span>
+        <h2>Start planning your trip</h2>
+        <p>Add destinations from the list above. Your itinerary saves automatically on this device.</p>
+        @if (favoritePlaces().length) {
+          <div class="quick-add">
+            <span>Quick add a saved place</span>
+            @for (place of favoritePlaces(); track place.id) {
+              <ion-button fill="outline" size="small" (click)="tripPlanService.addStop(place.id)">＋ {{ place.name }}</ion-button>
+            }
+          </div>
+        }
+        <ion-button routerLink="/tabs/home">Explore destinations</ion-button>
+      </section>
+    }
+
+    <p class="trip-disclaimer">This itinerary is a personal planning aid. Check local conditions, transport schedules, and opening information before travel.</p>
+  </main>
+</ion-content>

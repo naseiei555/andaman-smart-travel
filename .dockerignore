@@ -1,0 +1,10 @@
+.git
+**/node_modules
+**/dist
+**/www
+**/.angular
+**/coverage
+**/.env
+**/.env.*
+!**/.env.example
+nodered/node_modules

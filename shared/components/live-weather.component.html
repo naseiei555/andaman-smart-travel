@@ -1,0 +1,79 @@
+<section class="live-weather" [class.live-weather--compact]="compact" aria-live="polite">
+  @if (!compact && provinceOptions.length) {
+    <label class="live-weather__province-picker">
+      <span>{{ text('Weather for province', 'สภาพอากาศจังหวัด') }}</span>
+      <select [value]="selectedProvince()" (change)="selectProvince($event)">
+        @for (province of provinceOptions; track province) {
+          <option [value]="province" [selected]="province === selectedProvince()">{{ provinceName(province) }}</option>
+        }
+      </select>
+    </label>
+  }
+  @if (loading()) {
+    <p class="live-weather__status" role="status">{{ text('Loading weather information…', 'กำลังโหลดข้อมูลสภาพอากาศ…') }}</p>
+  } @else if (error()) {
+    <div class="live-weather__error" role="alert">
+      <p>{{ text('Weather information unavailable', 'ไม่สามารถโหลดข้อมูลสภาพอากาศได้') }}</p>
+      <button type="button" (click)="retry()">{{ text('Retry', 'ลองอีกครั้ง') }}</button>
+    </div>
+  } @else if (report(); as weather) {
+    @if (compact) {
+      <div class="live-weather__compact">
+        <div><strong>{{ weather.current.temperature }}°C · {{ conditionName(weather.current.condition) }}</strong><span>{{ destinationName(weather.destination) }} · {{ text('Humidity', 'ความชื้น') }} {{ weather.current.humidity }}% · {{ text('Wind', 'ลม') }} {{ weather.current.windSpeed }} km/h</span></div>
+        @if (weather.current.rainProbability !== null) {
+          <span>Rain {{ weather.current.rainProbability }}%</span>
+        }
+        @if (weather.seaConditions.waveHeight !== null) {
+          <span>Waves {{ weather.seaConditions.waveHeight }} m</span>
+        }
+      </div>
+      @if (weather.seaConditions.boatTravelWarning === true) {
+        <p class="live-weather__warning" role="alert">⚠️ Sea conditions may affect boat travel</p>
+      } @else if (!weather.seaConditions.marineDataAvailable) {
+        <p class="live-weather__note">Sea condition data unavailable; check local marine advisories.</p>
+      }
+      <p class="live-weather__attribution">
+        Updated {{ weather.updatedAt | date:'short' }} · Weather by
+        <a [href]="weather.source.url" target="_blank" rel="noopener noreferrer">{{ weather.source.name }}</a>
+      </p>
+    } @else {
+      <header class="live-weather__header">
+        <div>
+          <span class="live-weather__eyebrow">{{ text('LIVE WEATHER', 'สภาพอากาศล่าสุด') }} · {{ provinceName(weather.province) }}</span>
+          <h2>{{ weather.destination }}</h2>
+        </div>
+        <div class="live-weather__temperature"><strong>{{ weather.current.temperature }}°C</strong><span>{{ conditionName(weather.current.condition) }}</span></div>
+      </header>
+      <dl class="live-weather__stats">
+        <div><dt>{{ text('Humidity', 'ความชื้น') }}</dt><dd>{{ weather.current.humidity }}%</dd></div>
+        <div><dt>{{ text('Wind', 'ลม') }}</dt><dd>{{ weather.current.windSpeed }} km/h</dd></div>
+        <div><dt>{{ text('Rain chance', 'โอกาสฝน') }}</dt><dd>{{ weather.current.rainProbability === null ? '—' : weather.current.rainProbability + '%' }}</dd></div>
+        <div><dt>{{ text('Wind gusts', 'ลมกระโชก') }}</dt><dd>{{ weather.current.windGusts === null ? '—' : weather.current.windGusts + ' km/h' }}</dd></div>
+        <div><dt>{{ text('Wave height', 'ความสูงคลื่น') }}</dt><dd>{{ weather.seaConditions.waveHeight === null ? '—' : weather.seaConditions.waveHeight + ' m' }}</dd></div>
+      </dl>
+      @if (weather.seaConditions.boatTravelWarning === true) {
+        <p class="live-weather__warning" role="alert">⚠️ {{ text('Sea conditions may affect boat travel. Check local marine advisories before departing.', 'สภาพทะเลอาจกระทบการเดินทางทางเรือ โปรดตรวจสอบประกาศทางทะเลก่อนออกเดินทาง') }}</p>
+      } @else if (!weather.seaConditions.marineDataAvailable) {
+        <p class="live-weather__note">{{ text('Sea condition data unavailable; check local marine advisories before boat travel.', 'ไม่มีข้อมูลสภาพทะเล โปรดตรวจสอบประกาศในพื้นที่ก่อนเดินทางทางเรือ') }}</p>
+      }
+      <p class="live-weather__advice">{{ language === 'th' ? 'ตรวจสอบพยากรณ์และประกาศในพื้นที่ก่อนวางแผนกิจกรรมกลางแจ้งหรือเดินทางทางเรือ' : weather.activityAdvice }}</p>
+      @if (weather.forecast.length) {
+        <div class="live-weather__forecast" [attr.aria-label]="text('Five-day weather forecast', 'พยากรณ์อากาศ 5 วัน')">
+          @for (day of weather.forecast; track day.date) {
+            <article>
+              <strong>{{ day.date | date:'EEE, d MMM' }}</strong>
+              <span>{{ conditionName(day.condition) }}</span>
+              <span>{{ day.temperatureMin ?? '—' }}°–{{ day.temperatureMax ?? '—' }}°C</span>
+              <small>{{ text('Rain', 'ฝน') }} {{ day.rainProbability === null ? '—' : day.rainProbability + '%' }}</small>
+            </article>
+          }
+        </div>
+      }
+      <footer class="live-weather__attribution">
+        Updated {{ weather.updatedAt | date:'short' }} · Weather by
+        <a [href]="weather.source.url" target="_blank" rel="noopener noreferrer">{{ weather.source.name }}</a>
+        · <a [href]="weather.source.marineUrl" target="_blank" rel="noopener noreferrer">Marine data</a>
+      </footer>
+    }
+  }
+</section>

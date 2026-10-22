@@ -1,0 +1,75 @@
+:root {
+  color-scheme: light;
+
+  --color-primary: #0077b6;
+  --color-secondary: #00b4d8;
+  --color-accent: #48cae4;
+  --color-deep-ocean: #023e8a;
+  --color-sand: #f8e9d2;
+  --color-warm-sand: #e9d8b4;
+  --color-white: #ffffff;
+  --color-success: #2a9d8f;
+  --color-warning: #f4a261;
+  --color-danger: #e76f51;
+
+  --bg-page: #f7fbfc;
+  --bg-surface: var(--color-white);
+  --text: #16324f;
+  --text-muted: #6b7c93;
+  --brand: var(--color-primary);
+  --on-primary: var(--color-white);
+  --on-secondary: #001f3f;
+  --border: rgba(2, 62, 138, 0.14);
+  --focus-ring: var(--color-accent);
+
+  --gradient-ocean: linear-gradient(135deg, #023e8a 0%, #0077b6 55%, #00b4d8 100%);
+  --gradient-overlay: linear-gradient(180deg, rgba(2, 62, 138, 0.15) 0%, rgba(0, 31, 63, 0.75) 100%);
+
+  --font-display: 'Poppins', 'Noto Sans Thai', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Poppins', 'Noto Sans Thai', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-thai: 'Noto Sans Thai', 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-display: clamp(2.5rem, 1rem + 5vw, 4.5rem);
+  --text-h1: clamp(1.875rem, 1rem + 3vw, 3rem);
+  --text-h2: clamp(1.5rem, 1rem + 1.5vw, 2.125rem);
+  --text-h3: 1.25rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-caption: 0.75rem;
+
+  --radius-card: 20px;
+  --radius-button: 14px;
+  --radius-input: 14px;
+  --radius-image: 20px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 2px 8px rgba(2, 62, 138, 0.08);
+  --shadow-md: 0 8px 24px rgba(2, 62, 138, 0.12);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+  --container-max: 1200px;
+
+  --duration: 200ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-page: #071e2b;
+  --bg-surface: #0b2a3a;
+  --text: #ffffff;
+  --text-muted: #9fb3c8;
+  --brand: var(--color-accent);
+  --on-primary: #ffffff;
+  --on-secondary: #001f3f;
+  --border: rgba(72, 202, 228, 0.22);
+  --focus-ring: var(--color-accent);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --gradient-ocean: linear-gradient(135deg, #001f3f 0%, #023e8a 55%, #0077b6 100%);
+}

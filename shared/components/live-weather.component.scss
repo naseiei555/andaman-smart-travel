@@ -1,0 +1,185 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.live-weather {
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(2, 62, 138, 0.1);
+  border-radius: 18px;
+  background: #fff;
+  color: #25475a;
+  box-shadow: 0 12px 34px rgba(23, 53, 76, 0.07);
+}
+
+.live-weather__province-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  color: #526c7d;
+  font-size: 0.88rem;
+}
+
+.live-weather__province-picker select {
+  min-width: 190px;
+  padding: 10px 36px 10px 12px;
+  border: 1px solid #c8dbe4;
+  border-radius: 9px;
+  background: #fff;
+  color: #173b52;
+  font: inherit;
+}
+
+.live-weather__header,
+.live-weather__compact,
+.live-weather__temperature {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.live-weather__header h2,
+.live-weather__status,
+.live-weather__error p {
+  margin: 5px 0 0;
+}
+
+.live-weather__eyebrow,
+.live-weather__stats dt,
+.live-weather__forecast small,
+.live-weather__attribution {
+  color: #728493;
+  font-size: 0.72rem;
+}
+
+.live-weather__temperature {
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.live-weather__temperature strong {
+  color: #137d91;
+  font-size: 1.7rem;
+}
+
+.live-weather__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.live-weather__stats div,
+.live-weather__forecast article {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f3f8fa;
+}
+
+.live-weather__stats dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.live-weather__warning,
+.live-weather__note,
+.live-weather__advice {
+  margin: 12px 0 0;
+  line-height: 1.5;
+}
+
+.live-weather__warning {
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: #fff1e8;
+  color: #9b3b13;
+  font-weight: 700;
+}
+
+.live-weather__note {
+  color: #765c2a;
+}
+
+.live-weather__forecast {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.live-weather__forecast article {
+  font-size: 0.76rem;
+}
+
+.live-weather__attribution {
+  margin-top: 16px;
+  line-height: 1.5;
+}
+
+.live-weather a {
+  color: #137d91;
+}
+
+.live-weather__error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #8e3424;
+}
+
+.live-weather__error button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #137d91;
+  color: #fff;
+  cursor: pointer;
+}
+
+.live-weather--compact {
+  padding: 13px;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.live-weather__compact {
+  align-items: flex-start;
+  font-size: 0.72rem;
+}
+
+.live-weather__compact div {
+  display: grid;
+  gap: 4px;
+}
+
+.live-weather__compact span,
+.live-weather__note,
+.live-weather__status {
+  color: #728493;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 520px) {
+  .live-weather__province-picker {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .live-weather__province-picker select {
+    width: 100%;
+  }
+  .live-weather__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .live-weather__temperature {
+    align-items: flex-start;
+  }
+}

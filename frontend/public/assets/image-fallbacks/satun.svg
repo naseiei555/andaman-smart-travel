@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Satun image unavailable</title>
+  <desc id="desc">A simple original island and sea illustration shown only when the Satun photo cannot load.</desc>
+  <rect width="960" height="600" fill="#e5f4f4"/>
+  <circle cx="760" cy="150" r="50" fill="#f4a261" opacity=".78"/>
+  <path d="M0 350c120-33 256-22 390 10 153 37 280 21 570-21v261H0z" fill="#48cae4" opacity=".68"/>
+  <path d="M209 373c72-122 151-169 265-184 119 19 206 82 284 184-119 45-430 45-549 0z" fill="#80b59d"/>
+  <path d="M0 460c187-40 314-10 448 16 158 31 297 1 512-27v151H0z" fill="#0077b6" opacity=".56"/>
+  <text x="50%" y="83%" fill="#023e8a" font-family="Arial,sans-serif" font-size="34" text-anchor="middle">Satun · photo unavailable</text>
+</svg>

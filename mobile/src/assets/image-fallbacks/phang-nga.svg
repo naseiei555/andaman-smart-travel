@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Phang Nga image unavailable</title>
+  <desc id="desc">A simple original limestone bay illustration shown only when the Phang Nga photo cannot load.</desc>
+  <rect width="960" height="600" fill="#e5f4f4"/>
+  <path d="M0 300h960v300H0z" fill="#48cae4" opacity=".62"/>
+  <path d="M90 340 220 80l117 260zm270 8 134-260 113 260zm293-5 105-215 112 215z" fill="#80b59d"/>
+  <path d="M0 434c155-20 272-4 412 25 141 30 290 12 548-26v167H0z" fill="#0077b6" opacity=".52"/>
+  <text x="50%" y="79%" fill="#023e8a" font-family="Arial,sans-serif" font-size="34" text-anchor="middle">Phang Nga · photo unavailable</text>
+</svg>

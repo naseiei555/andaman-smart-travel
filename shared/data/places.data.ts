@@ -1,0 +1,393 @@
+import {
+  AndamanProvince,
+  imageAssets,
+  imageForProvince,
+  PlaceImage,
+  provinceShowcaseImages,
+} from './images.data';
+
+export interface AndamanPlace {
+  readonly id: string;
+  readonly name: string;
+  readonly province: AndamanProvince;
+  readonly category: string;
+  readonly description: string;
+  readonly image: PlaceImage;
+  readonly gallery: readonly PlaceImage[];
+  readonly rating: number;
+  readonly match: number;
+  readonly opening: string;
+  readonly estimatedCost: string;
+  readonly activities: readonly string[];
+  readonly latitude: number;
+  readonly longitude: number;
+}
+
+export interface ProvinceProfile {
+  readonly province: AndamanProvince;
+  readonly description: string;
+  readonly image: PlaceImage;
+  readonly latitude: number;
+  readonly longitude: number;
+}
+
+export const provinceProfiles: readonly ProvinceProfile[] = [
+  {
+    province: 'Phuket',
+    description: 'Island life and vibrant beaches',
+    image: provinceShowcaseImages.Phuket,
+    latitude: 7.95, longitude: 98.34,
+  },
+  {
+    province: 'Phang Nga',
+    description: 'Nature, islands and limestone cliffs',
+    image: provinceShowcaseImages['Phang Nga'],
+    latitude: 8.45, longitude: 98.53,
+  },
+  {
+    province: 'Krabi',
+    description: 'Cliffs, beaches and island adventures',
+    image: provinceShowcaseImages.Krabi,
+    latitude: 8.09, longitude: 98.91,
+  },
+  {
+    province: 'Trang',
+    description: 'Hidden islands and crystal waters',
+    image: provinceShowcaseImages.Trang,
+    latitude: 7.56, longitude: 99.61,
+  },
+  {
+    province: 'Satun',
+    description: 'Pristine islands and marine paradise',
+    image: provinceShowcaseImages.Satun,
+    latitude: 6.62, longitude: 100.07,
+  },
+  { province: 'Ranong', description: 'Rainforest, hot springs and quiet Andaman shores', image: provinceShowcaseImages.Ranong, latitude: 9.96, longitude: 98.63 },
+  { province: 'Chumphon', description: 'Coastal nature and gateways to the southern islands', image: provinceShowcaseImages.Chumphon, latitude: 10.49, longitude: 99.18 },
+  { province: 'Surat Thani', description: 'Island journeys and the Gulf of Thailand', image: provinceShowcaseImages['Surat Thani'], latitude: 9.14, longitude: 99.33 },
+  { province: 'Nakhon Si Thammarat', description: 'Historic communities and southern culture', image: provinceShowcaseImages['Nakhon Si Thammarat'], latitude: 8.43, longitude: 99.96 },
+  { province: 'Phatthalung', description: 'Wetlands, lakes and local traditions', image: provinceShowcaseImages.Phatthalung, latitude: 7.62, longitude: 100.08 },
+  { province: 'Songkhla', description: 'Old-town streets and southern food culture', image: provinceShowcaseImages.Songkhla, latitude: 7.20, longitude: 100.60 },
+  { province: 'Pattani', description: 'Coastal communities and distinctive local heritage', image: provinceShowcaseImages.Pattani, latitude: 6.87, longitude: 101.25 },
+  { province: 'Yala', description: 'Mountain scenery and southern local life', image: provinceShowcaseImages.Yala, latitude: 6.54, longitude: 101.28 },
+  { province: 'Narathiwat', description: 'Coastal landscapes and local heritage', image: provinceShowcaseImages.Narathiwat, latitude: 6.43, longitude: 101.82 },
+];
+
+const establishedDestinations: readonly AndamanPlace[] = [
+  {
+    id: 'phi-phi',
+    name: 'Phi Phi Islands',
+    province: 'Krabi',
+    category: 'Island escape',
+    description: 'Limestone cliffs and clear water make Phi Phi a favourite for island hopping.',
+    image: imageForProvince(imageAssets.phiPhi, 'Krabi'),
+    gallery: [
+      imageForProvince(imageAssets.mayaBay, 'Krabi'),
+      imageForProvince(imageAssets.railay, 'Krabi'),
+      imageForProvince(imageAssets.hongIsland, 'Krabi'),
+    ],
+    rating: 4.9,
+    match: 95,
+    opening: 'Check local park notices',
+    estimatedCost: '฿1,200 - ฿2,500',
+    activities: ['Snorkeling', 'Beach', 'Boat Tour', 'Island Hopping'],
+    latitude: 7.7403,
+    longitude: 98.7718,
+  },
+  {
+    id: 'railay',
+    name: 'Railay Beach',
+    province: 'Krabi',
+    category: 'Beach & cliffs',
+    description: 'A peninsula beach framed by the limestone scenery of Krabi.',
+    image: imageForProvince(imageAssets.railay, 'Krabi'),
+    gallery: [
+      imageForProvince(imageAssets.phiPhi, 'Krabi'),
+      imageForProvince(imageAssets.hongIsland, 'Krabi'),
+    ],
+    rating: 4.8,
+    match: 89,
+    opening: 'Open daily',
+    estimatedCost: '฿500 - ฿1,200',
+    activities: ['Hiking', 'Kayaking', 'Sunset', 'Rock Climbing'],
+    latitude: 8.0188,
+    longitude: 98.8441,
+  },
+  {
+    id: 'koh-lipe',
+    name: 'Koh Lipe',
+    province: 'Satun',
+    category: 'Island escape',
+    description: 'A small island in Satun known for its beaches and access to the Tarutao islands.',
+    image: imageForProvince(imageAssets.kohLipe, 'Satun'),
+    gallery: [
+      imageForProvince(imageAssets.kohAdangLagoon, 'Satun'),
+      imageForProvince(imageAssets.kohAdangSky, 'Satun'),
+    ],
+    rating: 4.7,
+    match: 92,
+    opening: 'Open daily',
+    estimatedCost: '฿900 - ฿2,200',
+    activities: ['Island Hopping', 'Sunset', 'Diving', 'Snorkeling'],
+    latitude: 6.4902,
+    longitude: 99.3088,
+  },
+  {
+    id: 'koh-kradan',
+    name: 'Koh Kradan',
+    province: 'Trang',
+    category: 'Quiet island',
+    description: 'An island in Trang province with clear coastal water and quiet beach scenery.',
+    image: imageForProvince(imageAssets.kohKradan, 'Trang'),
+    gallery: [
+      imageForProvince(imageAssets.kohKradanTwo, 'Trang'),
+      imageForProvince(imageAssets.kohKradan, 'Trang'),
+    ],
+    rating: 4.8,
+    match: 88,
+    opening: 'Open daily',
+    estimatedCost: '฿900 - ฿2,000',
+    activities: ['Beach', 'Snorkeling', 'Relax', 'Photography'],
+    latitude: 7.3156,
+    longitude: 99.2547,
+  },
+  {
+    id: 'phang-nga-bay',
+    name: 'Phang Nga Bay',
+    province: 'Phang Nga',
+    category: 'Nature & kayaking',
+    description: 'A bay dotted with islands and coastal communities including Ko Yao Noi.',
+    image: imageForProvince(imageAssets.phangNgaBay, 'Phang Nga'),
+    gallery: [
+      imageForProvince(imageAssets.koTapu, 'Phang Nga'),
+      imageForProvince(imageAssets.phangNgaBay, 'Phang Nga'),
+    ],
+    rating: 4.8,
+    match: 91,
+    opening: 'Open daily',
+    estimatedCost: '฿1,100 - ฿2,400',
+    activities: ['Kayaking', 'Boat Tour', 'Photography', 'Nature'],
+    latitude: 8.2734,
+    longitude: 98.5014,
+  },
+  {
+    id: 'phuket-old-town',
+    name: 'Phuket Old Town',
+    province: 'Phuket',
+    category: 'Culture & food',
+    description: 'Explore the historic streets and shophouse architecture of Phuket Town.',
+    image: imageForProvince(imageAssets.phuketOldTown, 'Phuket'),
+    gallery: [
+      imageForProvince(imageAssets.phuketOldTownStreet, 'Phuket'),
+      imageForProvince(imageAssets.phuketOldTownStreetTwo, 'Phuket'),
+    ],
+    rating: 4.6,
+    match: 86,
+    opening: 'Open daily',
+    estimatedCost: '฿300 - ฿1,000',
+    activities: ['Culture', 'Food', 'Photography', 'Walking'],
+    latitude: 7.8804,
+    longitude: 98.3923,
+  },
+  {
+    id: 'hong-island',
+    name: 'Hong Islands',
+    province: 'Krabi',
+    category: 'Nature & kayaking',
+    description: 'The Ko Hong island group sits among the limestone scenery off the Krabi coast.',
+    image: imageForProvince(imageAssets.hongIsland, 'Krabi'),
+    gallery: [
+      imageForProvince(imageAssets.railay, 'Krabi'),
+      imageForProvince(imageAssets.phiPhi, 'Krabi'),
+    ],
+    rating: 4.8,
+    match: 90,
+    opening: 'Check local park notices',
+    estimatedCost: '฿1,100 - ฿2,400',
+    activities: ['Kayaking', 'Canoeing', 'Photography', 'Snorkeling'],
+    latitude: 8.0417,
+    longitude: 98.8485,
+  },
+  {
+    id: 'koh-lanta',
+    name: 'Koh Lanta',
+    province: 'Krabi',
+    category: 'Nature & island life',
+    description: 'A large island district in Krabi with a long coastline and a relaxed pace.',
+    image: imageForProvince(imageAssets.kohLanta, 'Krabi'),
+    gallery: [
+      imageForProvince(imageAssets.railay, 'Krabi'),
+      imageForProvince(imageAssets.hongIsland, 'Krabi'),
+    ],
+    rating: 4.6,
+    match: 84,
+    opening: 'Open daily',
+    estimatedCost: '฿600 - ฿1,500',
+    activities: ['Relax', 'Nature', 'Road Trip', 'Sunset'],
+    latitude: 7.6104,
+    longitude: 99.0513,
+  },
+  {
+    id: 'maya-bay',
+    name: 'Maya Bay',
+    province: 'Krabi',
+    category: 'Beach & cliffs',
+    description: 'A sheltered bay on Phi Phi Leh, within Hat Noppharat Thara–Mu Ko Phi Phi National Park.',
+    image: imageForProvince(imageAssets.mayaBay, 'Krabi'),
+    gallery: [
+      imageForProvince(imageAssets.phiPhi, 'Krabi'),
+      imageForProvince(imageAssets.railay, 'Krabi'),
+    ],
+    rating: 4.7,
+    match: 93,
+    opening: 'Check local park notices',
+    estimatedCost: '฿1,500 - ฿2,800',
+    activities: ['Boat Tour', 'Photography', 'Nature'],
+    latitude: 7.7958,
+    longitude: 98.7836,
+  },
+];
+
+const representativeProvinceImage = (province: AndamanProvince): PlaceImage => ({
+  ...provinceShowcaseImages[province],
+  alt: `Representative photo from ${province}: ${provinceShowcaseImages[province].alt}`,
+});
+
+const attractionImages: Partial<Record<string, PlaceImage>> = {
+  'wat-chalong': imageForProvince(imageAssets.watChalong, 'Phuket'),
+  'kata-beach': imageForProvince(imageAssets.kataBeach, 'Phuket'),
+  'raksawarin-hot-springs': imageForProvince(imageAssets.raksawarin, 'Ranong'),
+  'thale-noi': imageForProvince(imageAssets.thaleNoi, 'Phatthalung'),
+  'wat-phra-mahathat': imageForProvince(imageAssets.watPhraMahathat, 'Nakhon Si Thammarat'),
+  'piyamit-tunnel': imageForProvince(imageAssets.piyamitTunnels, 'Yala'),
+  'betong-hot-springs': imageForProvince(imageAssets.betongHotSprings, 'Yala'),
+  'similan-islands': imageForProvince(imageAssets.similanIslands, 'Phang Nga'),
+  'samet-nangshe': imageForProvince(imageAssets.sametNangshe, 'Phang Nga'),
+  'emerald-pool': imageForProvince(imageAssets.emeraldPool, 'Krabi'),
+  'tiger-cave-temple': imageForProvince(imageAssets.tigerCaveTemple, 'Krabi'),
+  'thale-ban-national-park': imageForProvince(imageAssets.thaleBanPark, 'Satun'),
+  'khao-kop-cave': imageForProvince(imageAssets.khaoKopCave, 'Trang'),
+  'pak-meng-beach': imageForProvince(imageAssets.pakMengBeach, 'Trang'),
+  'stegodon-cave': imageForProvince(imageAssets.stegodonCave, 'Satun'),
+  'bang-lang-dam': imageForProvince(imageAssets.bangLangDam, 'Yala'),
+  'aiyerweng-skywalk': imageForProvince(imageAssets.yala, 'Yala'),
+  'morakot-cave': imageForProvince(imageAssets.morakotCave, 'Trang'),
+  'tarutao-national-park': imageForProvince(imageAssets.tarutao, 'Satun'),
+  'mu-ko-chumphon': imageForProvince(imageAssets.chumphon, 'Chumphon'),
+  'thung-wua-laen': imageForProvince(imageAssets.thungWuaLaen, 'Chumphon'),
+  'koh-ngam-yai': imageForProvince(imageAssets.kohNgamYai, 'Chumphon'),
+  'ang-thong-marine-park': imageForProvince(imageAssets.angThong, 'Surat Thani'),
+  'kiriwong-village': imageForProvince(imageAssets.kiriwongVillage, 'Nakhon Si Thammarat'),
+  'khao-chaison-hot-spring': imageForProvince(imageAssets.khaoChaisonHotSpring, 'Phatthalung'),
+  khanom: imageForProvince(imageAssets.khanom, 'Nakhon Si Thammarat'),
+  'khao-ok-thalu': imageForProvince(imageAssets.khaoOkThalu, 'Phatthalung'),
+  'songkhla-old-town': imageForProvince(imageAssets.songkhlaOldTown, 'Songkhla'),
+  'samila-beach': imageForProvince(imageAssets.samilaBeach, 'Songkhla'),
+  'pattani-central-mosque': imageForProvince(imageAssets.pattaniMosque, 'Pattani'),
+  'krue-se-mosque': imageForProvince(imageAssets.krueSeMosque, 'Pattani'),
+  'laem-ta-chi': imageForProvince(imageAssets.pattani, 'Pattani'),
+  rusamilae: imageForProvince(imageAssets.rusamilae, 'Pattani'),
+  'hala-bala': imageForProvince(imageAssets.halaBala, 'Narathiwat'),
+  'tang-kuan-hill': imageForProvince(imageAssets.tangKuanHill, 'Songkhla'),
+  'songkhla-national-museum': imageForProvince(imageAssets.songkhlaMuseum, 'Songkhla'),
+  'promthep-cape': imageForProvince(imageAssets.promthepCape, 'Phuket'),
+  'khao-lak': imageForProvince(imageAssets.khaoLak, 'Phang Nga'),
+  'koh-phayam': imageForProvince(imageAssets.kohPhayam, 'Ranong'),
+  'phu-khao-ya': imageForProvince(imageAssets.phuKhaoYa, 'Ranong'),
+  'ngao-waterfall': imageForProvince(imageAssets.ngaowaterfall, 'Ranong'),
+  'koh-samui': imageForProvince(imageAssets.suratThani, 'Surat Thani'),
+  'khao-sok': imageForProvince(imageAssets.cheowLanLake, 'Surat Thani'),
+  'cheow-lan-lake': imageForProvince(imageAssets.cheowLanLake, 'Surat Thani'),
+};
+
+const notablePlace = (
+  id: string,
+  name: string,
+  province: AndamanProvince,
+  category: string,
+  description: string,
+  latitude: number,
+  longitude: number,
+  activities: readonly string[],
+): AndamanPlace => ({
+  id, name, province, category, description,
+  image: attractionImages[id] ?? representativeProvinceImage(province),
+  gallery: [], rating: 4.5, match: 80,
+  opening: 'Check local visitor guidance', estimatedCost: 'Check locally',
+  activities, latitude, longitude,
+});
+
+const provinceShowcasePlaces: readonly AndamanPlace[] = [
+  { id: 'promthep-cape', name: 'Promthep Cape', province: 'Phuket', category: 'Coastal viewpoint', description: 'A headland at Phuket’s southern tip known for its sea views, especially near sunset.', image: attractionImages['promthep-cape']!, gallery: [], rating: 4.6, match: 81, opening: 'Open daily; check local access notices', estimatedCost: 'Check locally', activities: ['Sunset', 'Photography', 'Nature'], latitude: 7.7594, longitude: 98.3055 },
+  { id: 'khao-lak', name: 'Khao Lak Coast', province: 'Phang Nga', category: 'Beach & nature', description: 'A stretch of Andaman coastline with beaches and access to nearby protected areas.', image: attractionImages['khao-lak']!, gallery: [], rating: 4.6, match: 82, opening: 'Open daily; check park notices', estimatedCost: 'Check locally', activities: ['Beach', 'Nature', 'Relax', 'Photography'], latitude: 8.65, longitude: 98.25 },
+  { id: 'morakot-cave', name: 'Morakot Cave', province: 'Trang', category: 'Island & cave', description: 'A sea cave on Koh Muk reached by boat; access depends on tides and sea conditions.', image: attractionImages['morakot-cave']!, gallery: [], rating: 4.7, match: 83, opening: 'Check tides, boat schedules and local guidance', estimatedCost: 'Check locally', activities: ['Adventure', 'Nature', 'Photography', 'Boat Tour'], latitude: 7.37, longitude: 99.30 },
+  { id: 'tarutao-national-park', name: 'Tarutao National Park', province: 'Satun', category: 'Island & national park', description: 'An island national park with beaches, forest trails and seasonal visitor arrangements.', image: attractionImages['tarutao-national-park']!, gallery: [], rating: 4.7, match: 84, opening: 'Check park notices and seasonal closures', estimatedCost: 'Check locally', activities: ['Nature', 'Island Hopping', 'Adventure', 'Photography'], latitude: 6.62, longitude: 99.65 },
+  { id: 'koh-phayam', name: 'Koh Phayam', province: 'Ranong', category: 'Island & nature', description: 'A relaxed island known for quiet beaches, forested hills and a low-key coastal atmosphere.', image: attractionImages['koh-phayam']!, gallery: [], rating: 4.6, match: 82, opening: 'Check local boat schedules', estimatedCost: 'Check locally', activities: ['Beach', 'Nature', 'Relax', 'Photography'], latitude: 9.73, longitude: 98.42 },
+  { id: 'raksawarin-hot-springs', name: 'Raksawarin Hot Springs', province: 'Ranong', category: 'Hot springs & wellness', description: 'A public hot spring park in Ranong town with mineral pools and shaded green spaces.', image: attractionImages['raksawarin-hot-springs']!, gallery: [], rating: 4.5, match: 78, opening: 'Check local notices', estimatedCost: 'Check locally', activities: ['Nature', 'Relax', 'Culture'], latitude: 9.97, longitude: 98.64 },
+  { id: 'mu-ko-chumphon', name: 'Mu Ko Chumphon National Park', province: 'Chumphon', category: 'Islands & marine life', description: 'A coastal national park with islands, reefs and boat access to marine scenery.', image: attractionImages['mu-ko-chumphon']!, gallery: [], rating: 4.7, match: 84, opening: 'Check park notices and seasonal closures', estimatedCost: 'Check locally', activities: ['Island Hopping', 'Diving', 'Nature', 'Photography'], latitude: 10.39, longitude: 99.26 },
+  { id: 'thung-wua-laen', name: 'Thung Wua Laen Beach', province: 'Chumphon', category: 'Beach & coastal life', description: 'A long sandy beach north of Chumphon town with a calm coastal setting.', image: attractionImages['thung-wua-laen']!, gallery: [], rating: 4.5, match: 79, opening: 'Open daily', estimatedCost: 'Check locally', activities: ['Beach', 'Food', 'Relax', 'Sunset'], latitude: 10.51, longitude: 99.28 },
+  { id: 'koh-samui', name: 'Koh Samui', province: 'Surat Thani', category: 'Island & beach', description: 'A Gulf of Thailand island with beaches, local communities and a wide range of outdoor activities.', image: attractionImages['koh-samui']!, gallery: [], rating: 4.8, match: 88, opening: 'Open daily; check site notices', estimatedCost: 'Check locally', activities: ['Beach', 'Food', 'Nature', 'Relax'], latitude: 9.51, longitude: 100.01 },
+  { id: 'khao-sok', name: 'Khao Sok National Park', province: 'Surat Thani', category: 'Rainforest & lake', description: 'A protected rainforest landscape with limestone scenery and Cheow Lan Lake.', image: attractionImages['khao-sok']!, gallery: [], rating: 4.8, match: 87, opening: 'Check park notices', estimatedCost: 'Check locally', activities: ['Nature', 'Adventure', 'Photography'], latitude: 8.91, longitude: 98.53 },
+  { id: 'wat-phra-mahathat', name: 'Wat Phra Mahathat Woramahawihan', province: 'Nakhon Si Thammarat', category: 'Culture & heritage', description: 'A historic Buddhist temple and an important cultural landmark in Nakhon Si Thammarat.', image: attractionImages['wat-phra-mahathat']!, gallery: [], rating: 4.7, match: 83, opening: 'Check temple visitor guidance', estimatedCost: 'Check locally', activities: ['Culture', 'Photography', 'Walking'], latitude: 8.41, longitude: 99.96 },
+  { id: 'khanom', name: 'Khanom Coast', province: 'Nakhon Si Thammarat', category: 'Beach & nature', description: 'A coastal area known for quiet beaches and boat trips along the Gulf.', image: attractionImages['khanom']!, gallery: [], rating: 4.6, match: 80, opening: 'Open daily; check boat schedules', estimatedCost: 'Check locally', activities: ['Beach', 'Nature', 'Photography', 'Relax'], latitude: 9.18, longitude: 99.83 },
+  { id: 'thale-noi', name: 'Thale Noi Waterbird Park', province: 'Phatthalung', category: 'Wetlands & wildlife', description: 'A freshwater wetland reserve with birdlife, waterways and seasonal lotus scenery.', image: attractionImages['thale-noi']!, gallery: [], rating: 4.7, match: 85, opening: 'Check local boat and park notices', estimatedCost: 'Check locally', activities: ['Nature', 'Photography', 'Adventure'], latitude: 7.74, longitude: 100.13 },
+  { id: 'khao-ok-thalu', name: 'Khao Ok Thalu', province: 'Phatthalung', category: 'Viewpoint & nature', description: 'A distinctive limestone hill beside Phatthalung town with views over the surrounding landscape.', image: attractionImages['khao-ok-thalu']!, gallery: [], rating: 4.5, match: 77, opening: 'Check local access conditions', estimatedCost: 'Check locally', activities: ['Nature', 'Adventure', 'Photography'], latitude: 7.61, longitude: 100.09 },
+  { id: 'songkhla-old-town', name: 'Songkhla Old Town', province: 'Songkhla', category: 'Culture & food', description: 'A historic quarter with heritage shophouses, street art and local food.', image: attractionImages['songkhla-old-town']!, gallery: [], rating: 4.7, match: 84, opening: 'Open daily; individual businesses vary', estimatedCost: 'Check locally', activities: ['Culture', 'Food', 'Photography', 'Walking'], latitude: 7.20, longitude: 100.59 },
+  { id: 'samila-beach', name: 'Samila Beach', province: 'Songkhla', category: 'Beach & city', description: 'A popular city beach with a promenade and views across the Gulf of Thailand.', image: attractionImages['samila-beach']!, gallery: [], rating: 4.5, match: 79, opening: 'Open daily', estimatedCost: 'Check locally', activities: ['Beach', 'Sunset', 'Food', 'Relax'], latitude: 7.20, longitude: 100.60 },
+  { id: 'pattani-central-mosque', name: 'Pattani Central Mosque', province: 'Pattani', category: 'Architecture & culture', description: 'A prominent landmark in Pattani; visitors should respect local customs and prayer times.', image: attractionImages['pattani-central-mosque']!, gallery: [], rating: 4.6, match: 81, opening: 'Respect prayer times and visitor guidance', estimatedCost: 'Check locally', activities: ['Culture', 'Photography', 'Food'], latitude: 6.87, longitude: 101.25 },
+  { id: 'rusamilae', name: 'Rusamilae Coast', province: 'Pattani', category: 'Coastal community', description: 'A coastal area north of Pattani town with fishing communities and Gulf scenery.', image: attractionImages['rusamilae']!, gallery: [], rating: 4.4, match: 75, opening: 'Check local conditions', estimatedCost: 'Check locally', activities: ['Nature', 'Food', 'Photography'], latitude: 6.86, longitude: 101.23 },
+  { id: 'aiyerweng-skywalk', name: 'Aiyerweng Skywalk', province: 'Yala', category: 'Mountain viewpoint', description: 'A mountain viewpoint near Betong known for early morning cloud and mist views.', image: attractionImages['aiyerweng-skywalk']!, gallery: [], rating: 4.7, match: 84, opening: 'Check weather and local access notices', estimatedCost: 'Check locally', activities: ['Nature', 'Adventure', 'Photography'], latitude: 5.77, longitude: 101.21 },
+  { id: 'bang-lang-dam', name: 'Bang Lang Dam', province: 'Yala', category: 'Lake & nature', description: 'A large reservoir surrounded by forested hills in southern Yala.', image: attractionImages['bang-lang-dam']!, gallery: [], rating: 4.5, match: 77, opening: 'Check local access conditions', estimatedCost: 'Check locally', activities: ['Nature', 'Photography', 'Relax'], latitude: 6.16, longitude: 101.32 },
+  { id: 'narathat-beach', name: 'Narathat Beach', province: 'Narathiwat', category: 'Beach & local life', description: 'A long beach close to Narathiwat town, lined with casuarina trees.', image: imageForProvince(imageAssets.narathatBeach, 'Narathiwat'), gallery: [], rating: 4.5, match: 78, opening: 'Open daily', estimatedCost: 'Check locally', activities: ['Beach', 'Nature', 'Food', 'Sunset'], latitude: 6.43, longitude: 101.83 },
+  { id: 'hala-bala', name: 'Hala-Bala Wildlife Sanctuary', province: 'Narathiwat', category: 'Rainforest & wildlife', description: 'A protected rainforest landscape in the southern border region; access requires checking current official guidance.', image: attractionImages['hala-bala']!, gallery: [], rating: 4.6, match: 80, opening: 'Check official access guidance', estimatedCost: 'Check locally', activities: ['Nature', 'Adventure', 'Photography'], latitude: 5.79, longitude: 101.85 },
+  notablePlace('wat-chalong', 'Wat Chalong', 'Phuket', 'Temple & culture', 'One of Phuket’s best-known temples and a popular cultural stop.', 7.8463, 98.3344, ['Culture', 'Architecture', 'Photography']),
+  notablePlace('kata-beach', 'Kata Beach', 'Phuket', 'Beach & coast', 'A well-known Phuket beach with a broad sandy bay and places to eat nearby.', 7.8206, 98.2987, ['Beach', 'Swimming', 'Sunset']),
+  notablePlace('similan-islands', 'Similan Islands National Park', 'Phang Nga', 'Islands & marine life', 'Famous island park with clear water and reef scenery; check the seasonal opening dates.', 8.65, 97.65, ['Diving', 'Snorkeling', 'Island Hopping']),
+  notablePlace('samet-nangshe', 'Samet Nangshe Viewpoint', 'Phang Nga', 'Viewpoint & nature', 'A panoramic viewpoint over Phang Nga Bay’s limestone islands.', 8.2565, 98.4425, ['Sunrise', 'Photography', 'Nature']),
+  notablePlace('emerald-pool', 'Emerald Pool', 'Krabi', 'Forest & swimming', 'A natural pool in a lowland forest area of Krabi; check local park guidance.', 7.927, 99.266, ['Nature', 'Swimming', 'Adventure']),
+  notablePlace('tiger-cave-temple', 'Tiger Cave Temple', 'Krabi', 'Temple & viewpoint', 'A temple complex known for its hilltop viewpoint and long stair climb.', 8.126, 98.923, ['Culture', 'Hiking', 'Viewpoint']),
+  notablePlace('khao-kop-cave', 'Tham Le Khao Kop', 'Trang', 'Cave & adventure', 'A limestone cave river trip in Trang; visits depend on water levels and operator guidance.', 7.755, 99.574, ['Adventure', 'Nature', 'Boat Tour']),
+  notablePlace('pak-meng-beach', 'Pak Meng Beach', 'Trang', 'Beach & coast', 'A popular Trang mainland beach and common departure point for nearby islands.', 7.49, 99.32, ['Beach', 'Sunset', 'Food']),
+  notablePlace('thale-ban-national-park', 'Thale Ban National Park', 'Satun', 'Forest & lake', 'A forest park on the Thai–Malaysian border, known for its freshwater lake.', 6.719, 100.167, ['Nature', 'Hiking', 'Photography']),
+  notablePlace('stegodon-cave', 'Tham Le Stegodon', 'Satun', 'Cave & geopark', 'A long sea cave explored by boat with local guides; confirm tour conditions before visiting.', 6.84, 99.69, ['Adventure', 'Nature', 'Boat Tour']),
+  notablePlace('phu-khao-ya', 'Phu Khao Ya', 'Ranong', 'Grassland & viewpoint', 'Open grassy hills near Ranong town, especially vivid in the rainy season.', 9.83, 98.59, ['Nature', 'Photography', 'Viewpoint']),
+  notablePlace('ngao-waterfall', 'Ngao Waterfall', 'Ranong', 'Waterfall & national park', 'A prominent waterfall in Ngao National Park; check conditions during heavy rain.', 9.85, 98.63, ['Nature', 'Photography', 'Hiking']),
+  notablePlace('khao-matsee', 'Khao Matsee Viewpoint', 'Chumphon', 'Harbour viewpoint', 'A hilltop lookout over Chumphon Bay, fishing boats and the coastline.', 10.43, 99.25, ['Viewpoint', 'Sunset', 'Photography']),
+  notablePlace('koh-ngam-yai', 'Koh Ngam Yai', 'Chumphon', 'Island & marine life', 'A small offshore island known for dramatic limestone scenery and boat trips.', 10.08, 99.29, ['Island Hopping', 'Diving', 'Photography']),
+  notablePlace('ang-thong-marine-park', 'Ang Thong National Marine Park', 'Surat Thani', 'Islands & national park', 'An archipelago of protected islands in the Gulf; access and closures vary by season.', 9.62, 99.68, ['Island Hopping', 'Kayaking', 'Nature']),
+  notablePlace('cheow-lan-lake', 'Cheow Lan Lake', 'Surat Thani', 'Lake & limestone scenery', 'A reservoir in Khao Sok known for limestone karsts and overnight floating stays.', 9.04, 98.77, ['Boat Tour', 'Nature', 'Photography']),
+  notablePlace('sichon-beach', 'Sichon Beach', 'Nakhon Si Thammarat', 'Beach & coast', 'A relaxed Gulf coast area with local seafood and long beaches.', 9.01, 99.88, ['Beach', 'Food', 'Relax']),
+  notablePlace('kiriwong-village', 'Kiriwong Village', 'Nakhon Si Thammarat', 'Community & nature', 'A mountain village in Lan Saka district known for its stream, orchards and fresh air.', 8.43, 99.76, ['Nature', 'Community', 'Photography']),
+  notablePlace('pak-pra', 'Pak Pra Canal', 'Phatthalung', 'Wetlands & local life', 'A well-known sunrise boat area near Thale Noi, with traditional fishing gear and birdlife.', 7.65, 100.16, ['Sunrise', 'Boat Tour', 'Photography']),
+  notablePlace('khao-chaison-hot-spring', 'Khao Chaison Hot Spring', 'Phatthalung', 'Hot spring & nature', 'A local hot spring and limestone hill area in Phatthalung.', 7.41, 100.14, ['Relax', 'Nature', 'Culture']),
+  notablePlace('tang-kuan-hill', 'Tang Kuan Hill', 'Songkhla', 'City viewpoint', 'A hilltop viewpoint above Songkhla with views of the city and Gulf coast.', 7.20, 100.59, ['Viewpoint', 'Photography', 'Culture']),
+  notablePlace('songkhla-national-museum', 'Songkhla National Museum', 'Songkhla', 'Museum & heritage', 'A historic residence turned museum, close to the Red Rice Mill and old-town streets.', 7.19, 100.59, ['Culture', 'History', 'Architecture']),
+  notablePlace('laem-ta-chi', 'Laem Ta Chi (Laem Pho)', 'Pattani', 'Cape & coast', 'A long sand spit at Pattani Bay where visitors come for sea views and sunrise or sunset.', 6.9506, 101.2882, ['Beach', 'Sunrise', 'Photography']),
+  notablePlace('krue-se-mosque', 'Krue Se Mosque', 'Pattani', 'Historic architecture', 'A centuries-old mosque and important historical site in Pattani.', 6.87, 101.29, ['Culture', 'History', 'Architecture']),
+  notablePlace('piyamit-tunnel', 'Piyamit Tunnel', 'Yala', 'History & forest', 'A historic tunnel site near Betong set among forested hills; check opening guidance.', 5.76, 101.12, ['History', 'Nature', 'Hiking']),
+  notablePlace('betong-hot-springs', 'Betong Hot Springs', 'Yala', 'Hot spring & wellness', 'A popular natural hot spring stop in Betong district.', 5.79, 101.10, ['Relax', 'Nature', 'Wellness']),
+  notablePlace('bacho-waterfall', 'Bacho Waterfall', 'Narathiwat', 'Waterfall & forest', 'A well-known forest waterfall in Budo-Su-ngai Padi National Park; check local access advice.', 6.04, 101.91, ['Nature', 'Hiking', 'Photography']),
+  notablePlace('budo-national-park', 'Budo-Su-ngai Padi National Park', 'Narathiwat', 'Forest & wildlife', 'A protected mountain forest spanning Narathiwat, Pattani and Yala; follow current park guidance.', 6.06, 101.84, ['Nature', 'Wildlife', 'Adventure']),
+];
+
+export const destinations: readonly AndamanPlace[] = [...establishedDestinations, ...provinceShowcasePlaces];
+
+export const seasons = [
+  'Beach',
+  'Diving',
+  'Photography',
+  'Island Hopping',
+  'Nature',
+  'Adventure',
+  'Relax',
+  'Food',
+  'Sunset',
+];
+
+export const boatRoutes = [
+  { departure: 'Phuket', destination: 'Phi Phi Islands', departureTime: '08:30', duration: '1h 45m', type: 'Speedboat', price: '฿1,100', operator: 'Andaman Wave' },
+  { departure: 'Krabi', destination: 'Railay Beach', departureTime: '09:00', duration: '45m', type: 'Longtail', price: '฿350', operator: 'Krabi Boats' },
+  { departure: 'Krabi', destination: 'Hong Islands', departureTime: '10:30', duration: '2h 15m', type: 'Cruise', price: '฿1,450', operator: 'Sea Horizon' },
+  { departure: 'Trang', destination: 'Koh Muk', departureTime: '07:30', duration: '1h 50m', type: 'Ferry', price: '฿570', operator: 'Island Link' },
+  { departure: 'Pak Bara', destination: 'Koh Lipe', departureTime: '08:15', duration: '2h 10m', type: 'Ferry', price: '฿680', operator: 'Andaman Jet' },
+];

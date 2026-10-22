@@ -1,0 +1,199 @@
+@if (place(); as destination) {
+  <main class="place-detail">
+    <a class="place-detail__back" [routerLink]="homeLink">← {{ text('Back to provinces', 'กลับไปหน้าจังหวัด') }}</a>
+
+    <section class="place-hero" aria-labelledby="place-title">
+      <img
+        class="place-hero__image"
+        [src]="destination.image.url"
+        [srcset]="responsiveImageSrcset(destination.image.url)"
+        sizes="100vw"
+        [alt]="destination.image.alt"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        (error)="handleImageError($event, destination.image.fallbackUrl)"
+      />
+      <div class="place-hero__shade"></div>
+      <div class="place-hero__content">
+        <span class="place-hero__eyebrow">{{ localizedCategory(destination.category) }} · {{ localizedProvince(destination.province) }}, {{ text('Thailand', 'ประเทศไทย') }}</span>
+        <h1 id="place-title">{{ localizedName(destination.name) }}</h1>
+        <p>{{ localizedDescription(destination.name, destination.description) }}</p>
+        <div class="place-hero__rating">
+          <span aria-hidden="true">★</span> {{ destination.rating }}
+          <small>{{ text('sample rating', 'คะแนนตัวอย่าง') }}</small>
+        </div>
+        <button class="place-hero__favorite" type="button" (click)="addToTrip(destination.id)">{{ tripAdded() ? text('Added to trip ✓', 'เพิ่มในทริปแล้ว ✓') : text('＋ Add to Trip Planner', '＋ เพิ่มลงแผนเที่ยว') }}</button>
+        @if (tripAdded()) { <a class="place-detail__back" [routerLink]="homeLink" fragment="trip-planner">{{ text('View your itinerary', 'ดูแผนการเดินทาง') }} →</a> }
+        <button
+          class="place-hero__favorite"
+          type="button"
+          [attr.aria-label]="favoritesService.isFavorite(destination.id) ? text('Remove ', 'นำออกจากรายการที่บันทึก ') + localizedName(destination.name) : text('Save ', 'บันทึก ') + localizedName(destination.name)"
+          [attr.aria-pressed]="favoritesService.isFavorite(destination.id)"
+          (click)="toggleFavorite(destination.id)"
+        >{{ favoritesService.isFavorite(destination.id) ? text('♥ Saved', '♥ บันทึกแล้ว') : text('♡ Save place', '♡ บันทึกสถานที่') }}</button>
+      </div>
+      <span class="place-hero__credit">
+        {{ text('Photo:', 'ภาพโดย:') }} <a [href]="destination.image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ destination.image.photographer }}</a>
+        · <a [href]="destination.image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ destination.image.license }}</a>
+      </span>
+    </section>
+
+    <nav class="place-nav" [attr.aria-label]="text('Destination details', 'รายละเอียดสถานที่')">
+      <a href="#about">{{ text('About', 'เกี่ยวกับสถานที่') }}</a>
+      <a href="#weather">{{ text('Weather', 'สภาพอากาศ') }}</a>
+      <a href="#activities">{{ text('Activities', 'กิจกรรม') }}</a>
+      <a href="#gallery">{{ text('Gallery', 'แกลเลอรี') }}</a>
+      <a href="#getting-there">{{ text('Getting there', 'การเดินทาง') }}</a>
+    </nav>
+
+    <div class="place-detail__content">
+      <section class="detail-panel" id="about">
+        <span class="detail-kicker">{{ text('ABOUT THIS PLACE', 'เกี่ยวกับสถานที่') }}</span>
+        <h2>{{ text('A closer look at', 'รู้จัก') }} {{ localizedName(destination.name) }}</h2>
+        <p>{{ localizedDescription(destination.name, destination.description) }}</p>
+        <dl class="place-facts">
+          <div><dt>{{ text('Province', 'จังหวัด') }}</dt><dd>{{ localizedProvince(destination.province) }}</dd></div>
+          <div><dt>{{ text('Category', 'ประเภท') }}</dt><dd>{{ localizedCategory(destination.category) }}</dd></div>
+          <div><dt>{{ text('Typical estimate', 'ค่าใช้จ่ายโดยประมาณ') }}</dt><dd>{{ destination.estimatedCost }}</dd></div>
+          <div><dt>{{ text('Local access', 'เวลาและการเข้าชม') }}</dt><dd>{{ destination.opening }}</dd></div>
+        </dl>
+      </section>
+
+      <app-live-weather id="weather" [destinationId]="destination.id" [language]="language()" />
+
+      <section class="detail-panel" id="activities">
+        <span class="detail-kicker">{{ text('THINGS TO DO', 'กิจกรรมแนะนำ') }}</span>
+        <h2>{{ text('Activities', 'กิจกรรม') }}</h2>
+        <ul class="activity-list">
+          @for (activity of destination.activities; track activity) {
+            <li>{{ localizedActivity(activity) }}</li>
+          }
+        </ul>
+      </section>
+
+      <section class="detail-panel gallery-panel" id="gallery">
+        <div class="detail-panel__heading">
+          <div><span class="detail-kicker">{{ text('PHOTO GALLERY', 'แกลเลอรีภาพ') }}</span><h2>{{ text('See more of', 'ชมภาพเพิ่มเติมของ') }} {{ localizedName(destination.name) }}</h2></div>
+          <span class="gallery-count">{{ gallery().length }} {{ text('photos', 'ภาพ') }}</span>
+        </div>
+        <div class="place-gallery">
+          @for (image of gallery(); track image.sourceUrl; let index = $index) {
+            <button class="place-gallery__item" type="button" [attr.aria-label]="text('Open photo ', 'เปิดภาพที่ ') + (index + 1) + ' ' + text('of ', 'จาก ') + localizedName(destination.name)" (click)="openLightbox(index, lightbox)">
+              <img
+                [src]="image.url"
+                [srcset]="responsiveImageSrcset(image.url)"
+                sizes="(max-width: 700px) 80vw, 30vw"
+                [alt]="image.alt"
+                loading="lazy"
+                decoding="async"
+                (error)="handleImageError($event, image.fallbackUrl)"
+              />
+              <span>{{ text('View photo', 'ดูภาพ') }} ↗</span>
+            </button>
+          }
+        </div>
+        <ul class="gallery-credits" [attr.aria-label]="text('Photo credits', 'เครดิตภาพ')">
+          @for (image of gallery(); track image.sourceUrl) {
+            <li><a [href]="image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ image.photographer }}</a> · <a [href]="image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ image.license }}</a></li>
+          }
+        </ul>
+      </section>
+
+      <dialog
+        #lightbox
+        class="gallery-lightbox"
+        [attr.aria-label]="text('Destination photo gallery', 'แกลเลอรีภาพสถานที่ท่องเที่ยว')"
+        (keydown)="handleGalleryKeydown($event, lightbox)"
+        (touchstart)="beginGallerySwipe($event)"
+        (touchend)="finishGallerySwipe($event)"
+        (click)="($event.target === lightbox) && closeLightbox(lightbox)"
+        (close)="clearGallerySelection()"
+      >
+        @if (gallery()[selectedImageIndex()]; as image) {
+          <button class="gallery-lightbox__close" type="button" [attr.aria-label]="text('Close gallery', 'ปิดแกลเลอรี')" (click)="closeLightbox(lightbox)">×</button>
+          <button class="gallery-lightbox__arrow gallery-lightbox__arrow--previous" type="button" [attr.aria-label]="text('Previous photo', 'ภาพก่อนหน้า')" (click)="changeImage(-1)">‹</button>
+          <figure>
+            <img [src]="image.url" [srcset]="responsiveImageSrcset(image.url)" sizes="100vw" [alt]="image.alt" decoding="async" (error)="handleImageError($event, image.fallbackUrl)" />
+            <figcaption>
+              <span>{{ selectedImageIndex() + 1 }} / {{ gallery().length }} · {{ image.alt }}</span>
+              <span>{{ text('Photo:', 'ภาพโดย:') }} <a [href]="image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ image.photographer }}</a> · <a [href]="image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ image.license }}</a></span>
+            </figcaption>
+          </figure>
+          <button class="gallery-lightbox__arrow gallery-lightbox__arrow--next" type="button" [attr.aria-label]="text('Next photo', 'ภาพถัดไป')" (click)="changeImage(1)">›</button>
+        }
+      </dialog>
+
+      <section class="detail-panel getting-there" id="getting-there">
+        <div>
+          <span class="detail-kicker">{{ text('PLAN YOUR VISIT', 'วางแผนเที่ยว') }}</span>
+          <h2>{{ text('How to get there', 'การเดินทาง') }}</h2>
+          <p>{{ text('Use the destination pin to plan a route with current local transport and access information.', 'เปิดหมุดสถานที่เพื่อวางเส้นทางและตรวจสอบข้อมูลการเดินทางในพื้นที่') }}</p>
+          <a class="detail-link" [href]="directionsUrl(destination)" target="_blank" rel="noopener noreferrer">{{ text('Get directions on Google Maps', 'ดูเส้นทางใน Google Maps') }} ↗</a>
+        </div>
+        <div class="getting-there__map">
+          <span aria-hidden="true">⌖</span>
+          <strong>{{ localizedName(destination.name) }}</strong>
+          <small>{{ destination.latitude }}, {{ destination.longitude }}</small>
+          <a [href]="mapUrl(destination)" target="_blank" rel="noopener noreferrer">{{ text('Open map', 'เปิดแผนที่') }} ↗</a>
+        </div>
+        <div class="route-list">
+          <h3>{{ text('Boat routes', 'เส้นทางเรือ') }}</h3>
+          @if (boatRoutesLoading()) {
+            <p class="detail-note" role="status">{{ text('Loading boat route information…', 'กำลังโหลดข้อมูลเส้นทางเรือ…') }}</p>
+          } @else if (boatRoutesError()) {
+            <div class="boat-routes-error" role="alert">
+              <p>{{ text('Boat route information is unavailable right now.', 'ยังโหลดข้อมูลเส้นทางเรือไม่ได้ในขณะนี้') }}</p>
+              <button type="button" (click)="retryBoatRoutes()">{{ text('Retry', 'ลองอีกครั้ง') }}</button>
+            </div>
+          } @else if (availableBoatRoutes().length) {
+            @for (route of availableBoatRoutes(); track route.departure + route.destination) {
+              <div class="route-item">
+                <span>{{ route.departure }} → {{ route.destination }}</span>
+                <small>{{ route.transportType }} · {{ route.estimatedDuration }} · {{ route.price }}</small>
+                <small>{{ text('Departure', 'ออกเดินทาง') }} {{ route.departureTime }} · {{ route.operator }}</small>
+                <a [href]="boatDirectionsUrl(route)" target="_blank" rel="noopener noreferrer">{{ text('View route', 'ดูเส้นทาง') }} ↗</a>
+              </div>
+            }
+            <p class="detail-note">{{ text('Schedules, times and fares are sample planning information. Confirm with the operator before traveling.', 'ตารางเวลาและค่าโดยสารเป็นข้อมูลตัวอย่าง โปรดตรวจสอบกับผู้ให้บริการก่อนเดินทาง') }}</p>
+          } @else {
+            <p class="detail-note">{{ text('No boat routes are listed for this place. Check local piers and operators before traveling.', 'ยังไม่มีข้อมูลเส้นทางเรือสำหรับสถานที่นี้ โปรดตรวจสอบท่าเรือและผู้ให้บริการก่อนเดินทาง') }}</p>
+          }
+        </div>
+      </section>
+
+      <section class="detail-panel nearby-panel" aria-labelledby="nearby-title">
+        <span class="detail-kicker">{{ text('KEEP EXPLORING', 'เที่ยวต่อใกล้เคียง') }}</span>
+        <h2 id="nearby-title">{{ text('Nearby places in', 'สถานที่ใกล้เคียงใน') }} {{ localizedProvince(destination.province) }}</h2>
+        @if (nearbyPlaces().length) {
+          <div class="nearby-grid">
+            @for (nearby of nearbyPlaces(); track nearby.id) {
+              <a class="nearby-card" [routerLink]="['/places', nearby.id]">
+                <img [src]="nearby.image.url" [srcset]="responsiveImageSrcset(nearby.image.url)" sizes="(max-width: 700px) 80vw, 30vw" [alt]="nearby.image.alt" loading="lazy" decoding="async" (error)="handleImageError($event, nearby.image.fallbackUrl)" />
+                <span>{{ localizedCategory(nearby.category) }}</span>
+                <strong>{{ localizedName(nearby.name) }}</strong>
+                <small>{{ text('View destination', 'ดูสถานที่') }} ↗</small>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="detail-note">{{ text('Nearby places in this province are being added.', 'กำลังเพิ่มข้อมูลสถานที่ใกล้เคียงในจังหวัดนี้') }}</p>
+        }
+      </section>
+
+      <section class="detail-panel reviews-panel" aria-labelledby="reviews-title">
+        <span class="detail-kicker">{{ text('TRAVELLER FEEDBACK', 'ความคิดเห็นจากนักเดินทาง') }}</span>
+        <h2 id="reviews-title">{{ text('Reviews', 'รีวิว') }}</h2>
+        <p class="reviews-empty">ระบบรีวิวจากผู้เข้าชมยังไม่เปิดใช้งาน จึงยังไม่มีรีวิวจากผู้ใช้จริง</p>
+        <p class="detail-note">{{ text('The rating ', 'คะแนน ') }}{{ destination.rating }}{{ text(' is sample app data, not a score collected from user reviews.', ' เป็นข้อมูลตัวอย่างของแอป ไม่ใช่คะแนนรีวิวจากผู้ใช้') }}</p>
+      </section>
+    </div>
+  </main>
+} @else {
+  <main class="place-not-found">
+    <span class="detail-kicker">{{ text('DESTINATION NOT FOUND', 'ไม่พบสถานที่') }}</span>
+    <h1>{{ text("We couldn't find that place.", 'ไม่พบสถานที่นี้') }}</h1>
+    <p>{{ text('The destination link may be out of date.', 'ลิงก์สถานที่นี้อาจไม่เป็นปัจจุบัน') }}</p>
+    <a class="detail-link" [routerLink]="homeLink">{{ text('Back to Southern Thailand', 'กลับไปหน้าภาคใต้') }} ↗</a>
+  </main>
+}

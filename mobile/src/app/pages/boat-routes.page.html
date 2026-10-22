@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Boat routes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="boat-routes-page">
+    <header class="routes-heading">
+      <p>GETTING AROUND THE SOUTH</p>
+      <h1>Boat <em>routes</em></h1>
+      <span>Check sample departure and fare information before contacting an operator.</span>
+    </header>
+
+    <ion-searchbar
+      aria-label="Search boat routes"
+      placeholder="Search pier or destination"
+      [value]="searchQuery()"
+      (ionInput)="updateSearch($event)"
+    ></ion-searchbar>
+
+    @if (loading()) {
+      <p class="route-status" role="status">Loading boat routes…</p>
+    } @else if (error()) {
+      <section class="route-message" role="alert">
+        <p>Boat route information is unavailable right now.</p>
+        <ion-button fill="outline" (click)="refresh()">
+          <ion-icon slot="start" name="refresh"></ion-icon>
+          Retry
+        </ion-button>
+      </section>
+    } @else if (visibleRoutes().length) {
+      <div class="route-cards">
+        @for (route of visibleRoutes(); track route.id) {
+          <article class="route-card">
+            <div class="route-card__type">
+              <ion-icon aria-hidden="true" name="boat"></ion-icon>
+              <span>{{ route.transportType }}</span>
+            </div>
+            <h2>{{ route.departure }} <span aria-hidden="true">→</span> {{ route.destination }}</h2>
+            <dl>
+              <div><dt>Departure</dt><dd>{{ route.departureTime }}</dd></div>
+              <div><dt>Duration</dt><dd>{{ route.estimatedDuration }}</dd></div>
+              <div><dt>Indicative fare</dt><dd>{{ route.price }}</dd></div>
+            </dl>
+            <p class="route-card__operator">Listed operator: {{ route.operator }}</p>
+            <a [href]="routeSearchUrl(route)" target="_blank" rel="noopener noreferrer">Find pier information ↗</a>
+          </article>
+        }
+      </div>
+    } @else {
+      <section class="route-message">
+        <h2>No matching routes</h2>
+        <p>Try another pier, destination, or transport type.</p>
+      </section>
+    }
+
+    <p class="route-disclaimer">Schedules, operators, and fares are sample planning information, not live availability or booking. Confirm directly with local operators and check sea conditions before travel.</p>
+  </main>
+</ion-content>

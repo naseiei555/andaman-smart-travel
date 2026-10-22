@@ -1,0 +1,251 @@
+[
+  {
+    "id": "andaman-flow",
+    "type": "tab",
+    "label": "Andaman Smart Travel",
+    "disabled": false,
+    "info": "REST proxy for local events; data and authorization are provided by the Express API."
+  },
+  {
+    "id": "events-list-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "GET events and monthly calendar",
+    "url": "/api/events",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 100,
+    "wires": [
+      [
+        "events-url"
+      ]
+    ]
+  },
+  {
+    "id": "events-month-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "GET events by month",
+    "url": "/api/events/monthly",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 160,
+    "wires": [
+      [
+        "events-url"
+      ]
+    ]
+  },
+  {
+    "id": "events-detail-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "GET event detail",
+    "url": "/api/events/:eventId",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 220,
+    "wires": [
+      [
+        "events-url"
+      ]
+    ]
+  },
+  {
+    "id": "admin-create-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "POST admin event",
+    "url": "/api/admin/events",
+    "method": "post",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 300,
+    "wires": [
+      [
+        "admin-url"
+      ]
+    ]
+  },
+  {
+    "id": "admin-status-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "PATCH admin event status",
+    "url": "/api/admin/events/:eventId/status",
+    "method": "patch",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 360,
+    "wires": [
+      [
+        "admin-url"
+      ]
+    ]
+  },
+  {
+    "id": "admin-cancel-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "DELETE admin event",
+    "url": "/api/admin/events/:eventId",
+    "method": "delete",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 420,
+    "wires": [
+      [
+        "admin-url"
+      ]
+    ]
+  },
+  {
+    "id": "events-url",
+    "type": "function",
+    "z": "andaman-flow",
+    "name": "Forward public request",
+    "func": "const base = env.get('ANDAMAN_API_URL') || 'http://backend:3001';\nmsg.method = 'GET';\nmsg.url = base + msg.req.originalUrl;\nmsg.headers = { accept: 'application/json' };\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 390,
+    "y": 160,
+    "wires": [
+      [
+        "events-http"
+      ]
+    ]
+  },
+  {
+    "id": "admin-url",
+    "type": "function",
+    "z": "andaman-flow",
+    "name": "Forward admin request and bearer token",
+    "func": "const base = env.get('ANDAMAN_API_URL') || 'http://backend:3001';\nmsg.url = base + msg.req.originalUrl;\nmsg.method = msg.req.method;\nmsg.headers = { accept: 'application/json', 'content-type': 'application/json' };\nif (msg.req.headers.authorization) msg.headers.authorization = msg.req.headers.authorization;\nmsg.payload = msg.req.body;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 390,
+    "y": 360,
+    "wires": [
+      [
+        "admin-http"
+      ]
+    ]
+  },
+  {
+    "id": "events-http",
+    "type": "http request",
+    "z": "andaman-flow",
+    "name": "Express events API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 630,
+    "y": 160,
+    "wires": [
+      [
+        "events-response"
+      ]
+    ]
+  },
+  {
+    "id": "admin-http",
+    "type": "http request",
+    "z": "andaman-flow",
+    "name": "Express admin events API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 650,
+    "y": 360,
+    "wires": [
+      [
+        "admin-response"
+      ]
+    ]
+  },
+  {
+    "id": "events-response",
+    "type": "http response",
+    "z": "andaman-flow",
+    "name": "Return events response",
+    "statusCode": "",
+    "headers": {},
+    "x": 870,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "admin-response",
+    "type": "http response",
+    "z": "andaman-flow",
+    "name": "Return admin response",
+    "statusCode": "",
+    "headers": {},
+    "x": 880,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "admin-list-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "GET admin event list",
+    "url": "/api/admin/events",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 260,
+    "wires": [
+      "admin-url"
+    ]
+  },
+  {
+    "id": "admin-update-in",
+    "type": "http in",
+    "z": "andaman-flow",
+    "name": "PUT admin event details",
+    "url": "/api/admin/events/:eventId",
+    "method": "put",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 140,
+    "y": 330,
+    "wires": [
+      "admin-url"
+    ]
+  }
+]

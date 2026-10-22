@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Saved places</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="favorites-page">
+    <header class="favorites-heading">
+      <p class="favorites-eyebrow">YOUR PERSONAL COLLECTION</p>
+      <h1>Places to <em>remember</em></h1>
+      <p>{{ favoritePlaces().length }} {{ favoritePlaces().length === 1 ? 'place' : 'places' }} saved on this device</p>
+    </header>
+
+    @if (favoritePlaces().length > 0) {
+      <div class="favorite-list">
+        @for (place of favoritePlaces(); track place.id) {
+          <ion-card>
+            <div class="favorite-image">
+              <img
+                [src]="place.image.url"
+                [alt]="place.image.alt"
+                loading="lazy"
+                decoding="async"
+                (error)="handleImageError($event, place.image.fallbackUrl)"
+              />
+              <button
+                class="remove-favorite"
+                type="button"
+                [attr.aria-label]="'Remove ' + place.name + ' from saved places'"
+                (click)="removeFavorite(place.id)"
+              >
+                <ion-icon aria-hidden="true" name="heart"></ion-icon>
+              </button>
+            </div>
+            <ion-card-header>
+              <p class="favorite-location">{{ place.province }} · {{ place.category }}</p>
+              <ion-card-title>{{ place.name }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p>{{ place.description }}</p>
+              <p class="favorite-cost">{{ place.estimatedCost }}</p>
+              <a class="favorite-details" [routerLink]="['/places', place.id]">Explore details <span aria-hidden="true">↗</span></a>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+    } @else {
+      <section class="favorites-empty" aria-labelledby="favorites-empty-title">
+        <ion-icon aria-hidden="true" name="heart-dislike"></ion-icon>
+        <h2 id="favorites-empty-title">No saved places yet</h2>
+        <p>Tap the heart on a destination to keep it here for your next trip.</p>
+        <ion-button routerLink="/tabs/home">Explore destinations</ion-button>
+      </section>
+    }
+  </main>
+</ion-content>

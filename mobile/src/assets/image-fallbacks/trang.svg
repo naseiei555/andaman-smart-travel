@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Trang image unavailable</title>
+  <desc id="desc">A simple original island illustration shown only when the Trang photo cannot load.</desc>
+  <rect width="960" height="600" fill="#e5f4f4"/>
+  <circle cx="746" cy="142" r="48" fill="#f4a261" opacity=".8"/>
+  <path d="M0 344c155-25 270-10 410 22 161 36 294 17 550-22v256H0z" fill="#48cae4" opacity=".7"/>
+  <path d="M254 371c59-91 121-139 214-154 100 15 158 72 224 154-89 39-345 41-438 0z" fill="#80b59d"/>
+  <path d="M0 465c176-25 311-6 432 17 151 29 314 6 528-29v147H0z" fill="#0077b6" opacity=".55"/>
+  <text x="50%" y="83%" fill="#023e8a" font-family="Arial,sans-serif" font-size="34" text-anchor="middle">Trang · photo unavailable</text>
+</svg>

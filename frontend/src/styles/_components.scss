@@ -1,0 +1,148 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: 0 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  font-family: inherit;
+  font-size: var(--text-small);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform var(--duration) var(--ease),
+    background-color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease);
+
+  &:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  &:active { transform: translateY(0); }
+  &:disabled { cursor: not-allowed; opacity: 0.55; transform: none; box-shadow: none; }
+
+  &--pill { border-radius: var(--radius-pill); }
+  &--primary { background: var(--color-primary); color: var(--on-primary); }
+  &--primary:hover { background: var(--color-deep-ocean); }
+  &--secondary { background: var(--color-secondary); color: var(--on-secondary); }
+  &--ghost { background: transparent; color: var(--brand); border-color: var(--border); }
+  &--light { background: var(--color-white); color: var(--color-deep-ocean); }
+  &--glass {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(8px);
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--text-small);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease), transform var(--duration) var(--ease);
+
+  &:hover { transform: translateY(-2px); }
+  &[aria-pressed='true'] {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--on-primary);
+  }
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+
+  &--hover:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  &__media { aspect-ratio: 16 / 10; background-color: var(--color-sand); }
+  &__body { padding: var(--space-3); display: grid; gap: var(--space-2); }
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  color: var(--text);
+  font-size: var(--text-small);
+  font-weight: 500;
+
+  input, select, textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-input);
+    background: var(--bg-surface);
+    color: var(--text);
+    font-weight: 400;
+    transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+
+    &::placeholder { color: var(--text-muted); opacity: 0.8; }
+    &:hover { border-color: var(--color-secondary); }
+    &:focus-visible {
+      border-color: var(--color-primary);
+      outline: 3px solid color-mix(in srgb, var(--focus-ring) 35%, transparent);
+      outline-offset: 1px;
+    }
+    &:disabled { background: var(--bg-page); color: var(--text-muted); cursor: not-allowed; }
+  }
+
+  textarea { min-height: 120px; resize: vertical; }
+}
+
+.icon-button {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: var(--brand);
+  cursor: pointer;
+  transition: transform var(--duration) var(--ease), background-color var(--duration) var(--ease);
+
+  &:hover { transform: translateY(-2px); background: var(--color-sand); }
+  &:active { transform: translateY(0); }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-sand);
+  color: #5a4a2a;
+
+  &--success { background: var(--color-success); color: #fff; }
+}
+
+.skeleton {
+  border-radius: var(--radius-card);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--text-muted) 12%, transparent) 25%, color-mix(in srgb, var(--text-muted) 24%, transparent) 50%, color-mix(in srgb, var(--text-muted) 12%, transparent) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,148 @@
+.boat-routes-page {
+  padding: 22px 16px 36px;
+}
+
+.routes-heading {
+  margin: 4px 0 12px;
+}
+
+.routes-heading > p {
+  margin: 0 0 6px;
+  color: var(--ion-color-medium-shade);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+}
+
+.routes-heading h1 {
+  margin: 0;
+  color: var(--ion-text-color);
+  font-size: clamp(1.75rem, 7vw, 2.35rem);
+}
+
+.routes-heading h1 em {
+  color: var(--ion-color-primary);
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+
+.routes-heading > span {
+  display: block;
+  margin-top: 7px;
+  color: var(--ion-color-medium-shade);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+ion-searchbar {
+  --border-radius: 11px;
+  --box-shadow: none;
+  --background: #f2f7f7;
+  padding-inline: 0;
+}
+
+.route-cards {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.route-card {
+  padding: 16px;
+  border: 1px solid rgba(2, 62, 138, 0.12);
+  border-radius: 16px;
+  background: var(--ion-card-background, #fff);
+  box-shadow: 0 7px 20px rgba(9, 42, 70, 0.06);
+}
+
+.route-card__type {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ion-color-primary);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.route-card__type ion-icon {
+  font-size: 1.1rem;
+}
+
+.route-card h2 {
+  margin: 12px 0;
+  color: var(--ion-text-color);
+  font-size: 1.02rem;
+}
+
+.route-card h2 span {
+  color: var(--ion-color-primary);
+}
+
+.route-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0;
+}
+
+.route-card dl > div {
+  display: grid;
+  gap: 4px;
+}
+
+.route-card dt {
+  color: var(--ion-color-medium-shade);
+  font-size: 0.63rem;
+}
+
+.route-card dd {
+  margin: 0;
+  color: var(--ion-text-color);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.route-card__operator {
+  margin: 13px 0 8px;
+  color: var(--ion-color-medium-shade);
+  font-size: 0.74rem;
+}
+
+.route-card > a {
+  color: var(--ion-color-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.route-status,
+.route-disclaimer {
+  color: var(--ion-color-medium-shade);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.route-message {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid rgba(2, 62, 138, 0.12);
+  border-radius: 13px;
+  background: #f8fbfa;
+}
+
+.route-message p,
+.route-message h2 {
+  margin: 0;
+}
+
+.route-message h2 {
+  color: var(--ion-text-color);
+  font-size: 1rem;
+}
+
+.route-disclaimer {
+  margin-top: 14px;
+  font-size: 0.69rem;
+}

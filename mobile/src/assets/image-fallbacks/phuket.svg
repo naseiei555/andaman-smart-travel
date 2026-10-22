@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Phuket image unavailable</title>
+  <desc id="desc">A simple original coastline illustration shown only when the Phuket photo cannot load.</desc>
+  <rect width="960" height="600" fill="#e5f4f4"/>
+  <path d="M0 320c130-38 223-11 340 14 128 28 199 20 302-13 118-38 202-45 318-10v289H0z" fill="#48cae4" opacity=".65"/>
+  <path d="M0 404c122-30 215-21 334 10 111 29 210 31 323-4 115-35 202-40 303-10v200H0z" fill="#0077b6" opacity=".58"/>
+  <circle cx="754" cy="152" r="48" fill="#f4a261" opacity=".8"/>
+  <text x="50%" y="52%" fill="#023e8a" font-family="Arial,sans-serif" font-size="34" text-anchor="middle">Phuket · photo unavailable</text>
+</svg>

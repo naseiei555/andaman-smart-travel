@@ -1,0 +1,628 @@
+@if (isHome()) {
+<header class="site-header">
+  <a class="brand" href="#" [attr.aria-label]="text('Southern Thailand Travel home', 'หน้าแรกเที่ยวภาคใต้')">
+    <span class="brand__mark" aria-hidden="true">S</span>
+    <span class="brand__name">SOUTHERN <strong>THAILAND TRAVEL</strong></span>
+  </a>
+  <button
+    class="mobile-menu-toggle"
+    type="button"
+    [attr.aria-expanded]="mobileMenuOpen()"
+    [attr.aria-label]="mobileMenuOpen() ? text('Close navigation menu', 'ปิดเมนู') : text('Open navigation menu', 'เปิดเมนู')"
+    aria-controls="main-navigation"
+    (click)="toggleMobileMenu()"
+  >☰</button>
+  <nav
+    class="desktop-nav"
+    id="main-navigation"
+    [attr.aria-label]="text('Main navigation', 'เมนูหลัก')"
+    [class.is-open]="mobileMenuOpen()"
+    (keydown.escape)="closeMobileMenuOnEscape($event)"
+  >
+    <a href="#recommendations" (click)="closeMobileMenu()">{{ text('Discover', 'ค้นพบ') }}</a>
+    <a href="#provinces" (click)="selectedProvince.set('All'); closeMobileMenu()">{{ text('All cities', 'ทุกจังหวัด') }}</a>
+    <a href="#map" (click)="closeMobileMenu()">{{ text('Explore map', 'แผนที่') }}</a>
+    <a href="#boat-routes" (click)="closeMobileMenu()">{{ text('Boat routes', 'เส้นทางเรือ') }}</a>
+    <a routerLink="/events" (click)="closeMobileMenu()">{{ text('Local events', 'กิจกรรมท้องถิ่น') }}</a>
+    <a href="#favorites" (click)="closeMobileMenu()">{{ text('Saved', 'บันทึกไว้') }} ({{ savedPlaces().length }})</a>
+  </nav>
+  <button class="language-toggle" type="button" [attr.aria-label]="text('Switch to Thai', 'เปลี่ยนเป็นภาษาอังกฤษ')" (click)="toggleLanguage()">{{ language() === 'en' ? 'TH' : 'EN' }}</button>
+  @if (authService.session(); as user) {
+    <span class="login-user" [title]="user.email">{{ user.email }}</span>
+    <button class="login-button" type="button" (click)="authService.logout()">{{ text('Log out', 'ออกจากระบบ') }}</button>
+  } @else {
+    <button class="login-button" type="button" (click)="closeMobileMenu(); openAuthDialog(authDialog)">{{ text('Login', 'เข้าสู่ระบบ') }} <span aria-hidden="true">→</span></button>
+  }
+</header>
+
+<dialog #authDialog class="auth-dialog" aria-labelledby="auth-title">
+  <button class="auth-dialog__close" type="button" [attr.aria-label]="text('Close sign-in', 'ปิดหน้าลงชื่อเข้าใช้')" (click)="authDialog.close()">×</button>
+  <span class="section-kicker">{{ text('SOUTHERN THAILAND TRAVEL', 'เที่ยวภาคใต้') }}</span>
+  <h2 id="auth-title">{{ authMode() === 'login' ? text('Welcome back', 'ยินดีต้อนรับกลับ') : text('Create your account', 'สร้างบัญชี') }}</h2>
+  <p>{{ text('Save your favorite places and plan a trip across Southern Thailand.', 'บันทึกสถานที่โปรดและวางแผนเที่ยวทั่วภาคใต้') }}</p>
+  <form (submit)="submitAuth($event, authDialog)">
+    <label>{{ text('Email address', 'อีเมล') }}<input type="email" name="email" autocomplete="email" required maxlength="320" /></label>
+    <label>{{ text('Password', 'รหัสผ่าน') }}<input type="password" name="password" [attr.autocomplete]="authMode() === 'login' ? 'current-password' : 'new-password'" required [attr.minlength]="authMode() === 'login' ? 1 : 10" maxlength="128" /></label>
+    @if (authMode() === 'register') { <small>{{ text('Use at least 10 characters.', 'รหัสผ่านต้องมีอย่างน้อย 10 ตัวอักษร') }}</small> }
+    @if (authError()) { <p class="auth-dialog__error" role="alert">{{ authError() }}</p> }
+    <button class="button button--primary" type="submit" [disabled]="authBusy()">{{ authBusy() ? text('Please wait…', 'กำลังดำเนินการ…') : authMode() === 'login' ? text('Sign in', 'เข้าสู่ระบบ') : text('Create account', 'สร้างบัญชี') }}</button>
+  </form>
+  <p class="auth-dialog__switch">
+    {{ authMode() === 'login' ? text('New to Southern Thailand Travel?', 'ยังไม่มีบัญชีใช่ไหม') : text('Already have an account?', 'มีบัญชีอยู่แล้วใช่ไหม') }}
+    <button type="button" (click)="authMode.set(authMode() === 'login' ? 'register' : 'login'); authError.set('')">{{ authMode() === 'login' ? text('Create an account', 'สร้างบัญชี') : text('Sign in', 'เข้าสู่ระบบ') }}</button>
+  </p>
+</dialog>
+
+<main [attr.lang]="language()">
+  <section class="hero" aria-labelledby="hero-title">
+    <img
+      class="hero__photo"
+      [src]="heroImage.url"
+      [srcset]="responsiveImageSrcset(heroImage.url)"
+      sizes="100vw"
+      [alt]="heroImage.alt"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      (error)="handleImageError($event, heroImage.fallbackUrl)"
+    />
+    <div class="hero__content">
+      <span class="eyebrow"><span class="eyebrow__line"></span> {{ text('YOUR JOURNEY STARTS HERE', 'เริ่มต้นการเดินทางของคุณ') }}</span>
+      <h1 id="hero-title">{{ text('Explore', 'เที่ยว') }}<br /><em>{{ text('the South', 'ภาคใต้') }}</em></h1>
+      <p>{{ text('Discover beaches, islands, local culture and hidden gems across Southern Thailand.', 'ค้นพบชายหาด หมู่เกาะ วัฒนธรรมท้องถิ่น และสถานที่น่าประทับใจทั่วภาคใต้') }}</p>
+      <div class="hero__actions">
+        <a class="button button--primary" href="#recommendations">{{ text('Explore', 'เริ่มเที่ยว') }} <span aria-hidden="true">-&gt;</span></a>
+        <button class="button button--glass" type="button" (click)="startTrip()">{{ text('Plan My Trip', 'วางแผนทริป') }} <span aria-hidden="true">-&gt;</span></button>
+      </div>
+      <label class="search-box">
+        <span aria-hidden="true">→</span>
+        <input
+          type="search"
+          [placeholder]="text('Search places, provinces, or activities', 'ค้นหาสถานที่ จังหวัด หรือกิจกรรม')"
+          [attr.aria-label]="text('Search destinations, provinces, or activities', 'ค้นหาสถานที่ จังหวัด หรือกิจกรรม')"
+          (input)="updateSearch($event)"
+        />
+        <a href="#recommendations" [attr.aria-label]="text('See search results', 'ดูผลการค้นหา')">-&gt;</a>
+      </label>
+      <div class="hero__footnote"><span class="live-dot"></span> {{ text('14 SOUTHERN PROVINCES · ENDLESS POSSIBILITIES', '14 จังหวัดภาคใต้ · เที่ยวได้ไม่รู้จบ') }}</div>
+    </div>
+    <div class="hero__attribution">
+      {{ text('Photo:', 'ภาพโดย:') }} <a [href]="heroImage.sourceUrl" target="_blank" rel="noopener noreferrer">{{ heroImage.photographer }}</a>
+      · <a [href]="heroImage.licenseUrl" target="_blank" rel="noopener noreferrer">{{ heroImage.license }}</a>
+    </div>
+    <div class="hero__vertical">{{ text('SOUTHERN THAILAND', 'ภาคใต้ของประเทศไทย') }} <span></span> 6° N — 10° N</div>
+    <a class="hero__scroll" href="#weather"><span>{{ text('SCROLL TO EXPLORE', 'เลื่อนเพื่อสำรวจ') }}</span><i aria-hidden="true">-&gt;</i></a>
+    <div class="hero__counter"><strong>01</strong><span> / 05</span></div>
+  </section>
+
+  <section class="weather-section" id="weather" aria-labelledby="weather-title">
+    <div class="weather-intro">
+      <span class="section-kicker">{{ text('PLAN A PERFECT DAY', 'วางแผนวันเที่ยวให้ลงตัว') }}</span>
+      <h2 id="weather-title">{{ text('Weather', 'สภาพอากาศ') }} <em>{{ text('today', 'วันนี้') }}</em></h2>
+      <p>{{ text('Check the conditions before you set sail.', 'ตรวจสภาพอากาศก่อนออกเดินทาง') }}</p>
+    </div>
+    <app-live-weather [destinationId]="weatherDestinationId()" [provinceOptions]="provinces" [language]="language()" />
+  </section>
+
+  <section class="recommendations section-wrap" id="recommendations" aria-labelledby="recommendations-title">
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">{{ text('CURATED FOR YOUR NEXT ESCAPE', 'คัดสรรทริปถัดไปของคุณ') }}</span>
+        <h2 id="recommendations-title">{{ text('Recommended', 'แนะนำ') }} <em>{{ text('for you', 'สำหรับคุณ') }}</em></h2>
+        <p class="recommendations__hint">{{ text('Choose what you enjoy to personalize your destination ranking.', 'เลือกกิจกรรมที่ชอบเพื่อจัดอันดับสถานที่เที่ยวให้เหมาะกับคุณ') }}</p>
+      </div>
+      <a class="text-link" href="#provinces">{{ text('Explore all places', 'ดูสถานที่ทั้งหมด') }} <span aria-hidden="true">-&gt;</span></a>
+    </div>
+    <div class="interest-picker" [attr.aria-label]="text('Choose travel interests', 'เลือกความสนใจในการเดินทาง')">
+      @for (interest of recommendationInterestOptions; track interest) {
+        <button
+          class="interest-chip"
+          type="button"
+          [class.is-selected]="isRecommendationInterestSelected(interest)"
+          [attr.aria-pressed]="isRecommendationInterestSelected(interest)"
+          [disabled]="isRecommendationInterestSelected(interest) && selectedRecommendationInterests().length === 1"
+          (click)="toggleRecommendationInterest(interest)"
+        >{{ interestName(interest) }}</button>
+      }
+    </div>
+    <label class="province-filter">
+      <span>{{ text('Choose a city or province', 'เลือกเมืองหรือจังหวัด') }}</span>
+      <select [value]="selectedProvince()" (change)="setProvinceFilter($event)">
+        <option value="All">{{ text('All cities', 'ทุกจังหวัด') }}</option>
+        @for (province of provinces; track province) { <option [value]="province">{{ provinceName(province) }}</option> }
+      </select>
+    </label>
+    @if (recommendationsLoading()) {
+      <p class="recommendation-status" role="status">{{ text('Updating recommendations…', 'กำลังอัปเดตคำแนะนำ…') }}</p>
+    }
+    @if (recommendationsError()) {
+      <div class="recommendation-error" role="alert">
+        <span>{{ text('Recommendations are unavailable right now. Check your connection and try again.', 'ไม่สามารถโหลดคำแนะนำได้ในขณะนี้ โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง') }}</span>
+        <button type="button" (click)="refreshRecommendations()">{{ text('Retry', 'ลองอีกครั้ง') }}</button>
+      </div>
+    }
+    @if (recommendationsOffline()) {
+      <p class="recommendation-status" role="status">{{ text('Showing on-device recommendations. Connect to the travel service to refresh.', 'กำลังแสดงคำแนะนำจากข้อมูลในอุปกรณ์ เชื่อมต่อบริการท่องเที่ยวเพื่ออัปเดต') }}</p>
+    }
+    @if (selectedProvince() !== 'All') {
+      <p class="recommendation-status" role="status">{{ text('Places in ', 'สถานที่ในจังหวัด') }}{{ provinceName(selectedProvince()) }}{{ text(' are ranked on this device using your selected interests.', 'จัดอันดับตามความสนใจที่คุณเลือก') }}</p>
+    }
+    @if (selectedProvince() !== 'All' || searchQuery()) {
+      <div class="filter-summary">
+        {{ text('Showing ', 'แสดง ') }}{{ visibleDestinations().length }} {{ text('places', 'สถานที่') }}
+        @if (selectedProvince() !== 'All') { <span>{{ text('in ', 'ใน') }} {{ provinceName(selectedProvince()) }}</span> }
+        @if (searchQuery()) { <span>{{ text('matching “', 'ที่ตรงกับ “') }}{{ searchQuery() }}”</span> }
+        <button type="button" (click)="selectedProvince.set('All'); searchQuery.set('')">{{ text('Clear filters', 'ล้างตัวกรอง') }}</button>
+      </div>
+    }
+    <div class="destination-grid">
+      @for (place of visibleDestinations(); track place.id) {
+        <article class="destination-card">
+          <div class="destination-card__image">
+            <img
+              class="destination-card__photo"
+              [src]="place.image.url"
+              [srcset]="responsiveImageSrcset(place.image.url)"
+              sizes="(max-width: 700px) 38vw, (max-width: 1000px) 45vw, 25vw"
+              [alt]="place.image.alt"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event, place.image.fallbackUrl)"
+            />
+            <span class="destination-card__tag">{{ placeCategory(place.category) }}</span>
+            <button
+              class="save-button"
+              type="button"
+              [class.is-saved]="isSaved(place.id)"
+              [attr.aria-label]="isSaved(place.id) ? text('Remove ', 'นำออกจากรายการที่บันทึก ') + placeName(place.name) : text('Save ', 'บันทึก ') + placeName(place.name)"
+              [attr.aria-pressed]="isSaved(place.id)"
+              (click)="toggleSaved(place.id)"
+            >{{ isSaved(place.id) ? '&#9733;' : '&#9734;' }}</button>
+            <span class="match-badge">{{ place.matchScore }}% <small>{{ text('MATCH', 'ตรงใจ') }}</small></span>
+          </div>
+          <div class="destination-card__body">
+            <div class="destination-card__meta"><span>{{ provinceName(place.province) }}, {{ text('Thailand', 'ประเทศไทย') }}</span><span>&#9733; {{ place.rating }}</span></div>
+            <h3>{{ placeName(place.name) }}</h3>
+            <p class="destination-card__reason">{{ recommendationReason(place.reason) }}</p>
+            <div class="image-credit">
+              {{ text('Photo:', 'ภาพโดย:') }} <a [href]="place.image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ place.image.photographer }}</a>
+              · <a [href]="place.image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ place.image.license }}</a>
+            </div>
+            <a class="destination-card__details" [routerLink]="['/places', place.id]">{{ text('Explore details', 'ดูรายละเอียด') }} <span aria-hidden="true">-&gt;</span></a>
+            <a class="destination-card__details" [routerLink]="['/events']" [queryParams]="{ province: place.province }">{{ text('Local events in', 'กิจกรรมใน') }} {{ provinceName(place.province) }}</a>
+            <a [href]="mapUrl(place)" target="_blank" rel="noopener noreferrer">{{ text('View location', 'ดูแผนที่') }} <span aria-hidden="true">-&gt;</span></a>
+          </div>
+        </article>
+      } @empty {
+        <div class="empty-state">
+          <span aria-hidden="true">→</span>
+          <h3>{{ text('No destination matches this selection yet', 'ยังไม่พบสถานที่ที่ตรงกับตัวเลือกนี้') }}</h3>
+          <p>{{ text('Explore local events in ', 'ดูกิจกรรมท้องถิ่นใน') }}{{ provinceName(selectedProvince()) }}{{ text(' or clear the filters to see all available destinations.', ' หรือล้างตัวกรองเพื่อดูสถานที่ทั้งหมด') }}</p>
+          <a class="button button--primary" [routerLink]="['/events']" [queryParams]="{ province: selectedProvince() }">{{ text('View local events', 'ดูกิจกรรมท้องถิ่น') }}</a>
+          <button class="button button--glass" type="button" (click)="selectedProvince.set('All'); searchQuery.set('')">{{ text('Show all destinations', 'แสดงสถานที่ทั้งหมด') }}</button>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="favorites-section section-wrap" id="favorites" aria-labelledby="favorites-title">
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">{{ text('YOUR PERSONAL COLLECTION', 'สถานที่โปรดของคุณ') }}</span>
+        <h2 id="favorites-title">{{ text('Saved', 'สถานที่') }} <em>{{ text('places', 'ที่บันทึกไว้') }}</em></h2>
+      </div>
+      <span class="favorites-count">{{ savedPlaces().length }} {{ text('saved', 'รายการ') }}</span>
+    </div>
+    @if (savedPlaces().length) {
+      <div class="destination-grid">
+        @for (place of savedDestinations(); track place.id) {
+          <article class="destination-card">
+            <div class="destination-card__image">
+              <img
+                class="destination-card__photo"
+                [src]="place.image.url"
+                [srcset]="responsiveImageSrcset(place.image.url)"
+                sizes="(max-width: 700px) 38vw, (max-width: 1000px) 45vw, 25vw"
+                [alt]="place.image.alt"
+                loading="lazy"
+                decoding="async"
+                (error)="handleImageError($event, place.image.fallbackUrl)"
+              />
+              <button
+                class="save-button is-saved"
+                type="button"
+                [attr.aria-label]="text('Remove ', 'นำออกจากรายการที่บันทึก ') + placeName(place.name)"
+                aria-pressed="true"
+                (click)="toggleSaved(place.id)"
+              >&#9733;</button>
+            </div>
+            <div class="destination-card__body">
+              <div class="destination-card__meta"><span>{{ provinceName(place.province) }}, {{ text('Thailand', 'ประเทศไทย') }}</span><span>&#9733; {{ place.rating }}</span></div>
+              <h3>{{ placeName(place.name) }}</h3>
+              <p>{{ placeDescription(place.name, place.description) }}</p>
+              <a class="destination-card__details" [routerLink]="['/places', place.id]">{{ text('Explore details', 'ดูรายละเอียด') }} <span aria-hidden="true">-&gt;</span></a>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="favorites-empty">
+        <span aria-hidden="true">&#9734;</span>
+        <h3>{{ text('No saved places yet', 'ยังไม่มีสถานที่ที่บันทึกไว้') }}</h3>
+        <p>{{ text('Tap the heart on a destination to keep it here for your next trip.', 'กดรูปหัวใจบนสถานที่เพื่อบันทึกไว้สำหรับทริปถัดไป') }}</p>
+        <a class="button button--primary" href="#recommendations">{{ text('Explore destinations', 'สำรวจสถานที่') }}</a>
+      </div>
+    }
+  </section>
+
+  <section class="provinces-section" id="provinces" aria-labelledby="provinces-title">
+    <div class="provinces-section__copy">
+      <span class="section-kicker">{{ text('14 SOUTHERN PROVINCES, ONE JOURNEY', '14 จังหวัดภาคใต้ในทริปเดียว') }}</span>
+      <h2 id="provinces-title">{{ text('Explore', 'เที่ยว') }} <em>{{ text('Southern Thailand', 'ภาคใต้') }}</em></h2>
+      <p>{{ text('Choose a province to explore its featured photo, map and notable places across Southern Thailand.', 'เลือกจังหวัดเพื่อชมภาพ แผนที่ และสถานที่ท่องเที่ยวแนะนำ') }}</p>
+    </div>
+    <div class="province-grid" [attr.aria-label]="text('Explore Southern Thailand provinces', 'สำรวจจังหวัดภาคใต้')">
+      @for (province of provinceCards; track province.province; let index = $index) {
+        <article class="province-card" [class.is-active]="selectedProvince() === province.province">
+          <div class="province-card__image">
+            <img
+              [src]="province.image.url"
+              [srcset]="responsiveImageSrcset(province.image.url)"
+              sizes="(max-width: 700px) 45vw, (max-width: 1000px) 30vw, 20vw"
+              [alt]="province.image.alt"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event, province.image.fallbackUrl)"
+            />
+            <span class="province-card__number">{{ (index + 1).toString().padStart(2, '0') }}</span>
+          </div>
+          <div class="province-card__body">
+            <span class="province-card__count">
+              {{ province.placeCount }} {{ text(province.placeCount === 1 ? 'PLACE' : 'PLACES', 'สถานที่') }}
+            </span>
+            <h3>{{ provinceName(province.province) }}</h3>
+            <p>{{ provinceDescription(province.province, province.description) }}</p>
+            <button
+              type="button"
+              class="province-card__action"
+              [attr.aria-pressed]="selectedProvince() === province.province"
+              (click)="selectProvince(province.province)"
+            >
+              {{ selectedProvince() === province.province ? text('Showing', 'กำลังดู') : text('Explore', 'เที่ยว') }} {{ provinceName(province.province) }}
+              <span aria-hidden="true">-&gt;</span>
+            </button>
+            <span class="province-card__credit">
+              @if (province.image.source === 'Andaman Smart Travel') {
+                {{ province.image.license }} {{ text('by', 'โดย') }} {{ province.image.photographer }}
+              } @else {
+                {{ text('Photo:', 'ภาพโดย:') }} <a [href]="province.image.sourceUrl" target="_blank" rel="noopener noreferrer">{{ province.image.photographer }}</a>
+                · <a [href]="province.image.licenseUrl" target="_blank" rel="noopener noreferrer">{{ province.image.license }}</a>
+              }
+            </span>
+          </div>
+        </article>
+      }
+      @if (selectedProvince() !== 'All') {
+        <button class="province-reset" type="button" (click)="selectedProvince.set('All')">{{ text('All cities and destinations', 'ทุกจังหวัดและสถานที่') }}</button>
+      }
+    </div>
+    @if (selectedProvinceProfile(); as province) {
+      <section class="province-detail" aria-labelledby="province-detail-title" id="province-detail">
+        <div class="province-detail__intro">
+          <img [src]="province.image.url" [alt]="province.image.alt" (error)="handleImageError($event, province.image.fallbackUrl)" />
+          <div>
+        <span class="section-kicker">{{ text('EXPLORE THE PROVINCE', 'สำรวจจังหวัด') }}</span>
+            <h3 id="province-detail-title">{{ provinceName(province.province) }}</h3>
+            <p>{{ provinceDescription(province.province, province.description) }}</p>
+            <a class="text-link" [href]="'https://www.google.com/maps/search/?api=1&query=' + province.latitude + ',' + province.longitude" target="_blank" rel="noopener noreferrer">{{ text('Open this province in Maps', 'เปิดแผนที่จังหวัดนี้') }} <span aria-hidden="true">-&gt;</span></a>
+          </div>
+        </div>
+        <div class="province-detail__content">
+          <div class="province-detail__map">
+            <h4>{{ text('Map of', 'แผนที่') }} {{ provinceName(province.province) }}</h4>
+            <iframe [src]="provinceMapUrl(province)" [title]="'Map of ' + province.province" loading="lazy" referrerpolicy="no-referrer"></iframe>
+            <small>{{ text('Map data © OpenStreetMap contributors', 'ข้อมูลแผนที่ © ผู้ร่วมพัฒนา OpenStreetMap') }}</small>
+          </div>
+          <div class="province-detail__video">
+            <h4>{{ text('See', 'ชม') }} {{ provinceName(province.province) }}</h4>
+            @if (provinceVideoEmbedUrl(province); as videoUrl) {
+              <iframe [src]="videoUrl" [title]="provinceVideo(province)?.title ?? ('Video of ' + province.province)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              <small>{{ text('Video:', 'วิดีโอ:') }} {{ provinceVideo(province)?.channel }} · <a [href]="provinceVideo(province)?.sourceUrl" target="_blank" rel="noopener noreferrer">{{ text('Open source', 'เปิดแหล่งที่มา') }}</a></small>
+            } @else {
+              <p>{{ text('Find recent travel videos and local guides for ', 'ค้นหาวิดีโอท่องเที่ยวและคู่มือท้องถิ่นของ ') }}{{ provinceName(province.province) }}</p>
+              <a class="button button--primary" [href]="provinceVideoSearchUrl(province)" target="_blank" rel="noopener noreferrer">{{ text('Watch videos about ', 'ดูวิดีโอเที่ยว') }}{{ provinceName(province.province) }} <span aria-hidden="true">-&gt;</span></a>
+            }
+          </div>
+        </div>
+        <div class="province-detail__places">
+          <div class="province-detail__places-heading">
+            <div><span class="section-kicker">{{ text('PLAN YOUR VISIT', 'วางแผนเที่ยว') }}</span><h4>{{ text('Places to explore in', 'สถานที่น่าเที่ยวใน') }} {{ provinceName(province.province) }}</h4></div>
+            <a [routerLink]="['/events']" [queryParams]="{ province: province.province }">{{ text('Local events', 'กิจกรรมท้องถิ่น') }} <span aria-hidden="true">-&gt;</span></a>
+          </div>
+          @if (selectedProvincePlaces().length) {
+            <div class="province-place-list">
+              @for (place of selectedProvincePlaces(); track place.id) {
+                <a class="province-place" [routerLink]="['/places', place.id]">
+                  <img [src]="place.image.url" [alt]="place.image.alt" loading="lazy" (error)="handleImageError($event, place.image.fallbackUrl)" />
+                  <span><strong>{{ placeName(place.name) }}</strong><small>{{ placeCategory(place.category) }}</small></span>
+                  <span aria-hidden="true">-&gt;</span>
+                </a>
+              }
+            </div>
+          } @else {
+            <p class="province-detail__empty">{{ text('We are adding destination listings for ', 'กำลังเพิ่มรายชื่อสถานที่เที่ยวใน') }}{{ provinceName(province.province) }}{{ text('. Browse local events or explore the province map in the meantime.', ' ระหว่างนี้ดูปฏิทินกิจกรรมหรือสำรวจแผนที่จังหวัดได้') }}</p>
+          }
+        </div>
+      </section>
+    }
+  </section>
+
+  <section class="experience-section section-wrap" aria-labelledby="experience-title">
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">{{ text('A LITTLE PREVIEW OF PARADISE', 'ตัวอย่างความงามของภาคใต้') }}</span>
+        <h2 id="experience-title">{{ text('Experience', 'สัมผัส') }} <em>{{ text('Southern Thailand', 'ภาคใต้') }}</em></h2>
+      </div>
+      <p>{{ text('Plan your journey with curated destinations, local events, and practical travel information.', 'วางแผนเดินทางด้วยสถานที่แนะนำ กิจกรรมท้องถิ่น และข้อมูลที่เป็นประโยชน์') }}</p>
+    </div>
+    <div class="experience-grid">
+      @for (video of videos; track video.id) {
+        <article class="experience-card">
+          <button
+            class="experience-card__trigger"
+            type="button"
+            [attr.aria-label]="text('Play ', 'เล่นวิดีโอ ') + video.title"
+            (click)="openVideo(video, videoDialog)"
+          >
+            <span class="experience-card__media">
+              <img
+                class="experience-card__image"
+                [src]="video.thumbnail"
+                [alt]="text('Video thumbnail for ', 'ภาพตัวอย่างวิดีโอ ') + video.title"
+                loading="lazy"
+                decoding="async"
+                (error)="handleImageError($event, video.fallbackUrl)"
+              />
+              <span class="play-button" aria-hidden="true">โ–ถ</span>
+            </span>
+            <span class="experience-card__caption">
+              <small>{{ text('EXPERIENCE', 'เที่ยว') }} {{ provinceName(video.province) }}</small>
+              <strong>{{ video.province }}</strong>
+              <span class="experience-card__title">{{ video.title }}</span>
+            </span>
+          </button>
+          <a class="video-source" [href]="video.sourceUrl" target="_blank" rel="noopener noreferrer">
+            {{ text('Video:', 'วิดีโอ:') }} {{ video.channel }} · YouTube <span aria-hidden="true">-&gt;</span>
+          </a>
+        </article>
+      }
+    </div>
+    <p class="external-note">{{ text('Video content is provided by its respective YouTube channels. Select a video to watch it on YouTube.', 'วิดีโอให้บริการโดยช่อง YouTube ที่เกี่ยวข้อง เลือกวิดีโอเพื่อรับชมบน YouTube') }}</p>
+  </section>
+
+  <div id="map">
+    @defer (on viewport) {
+      <app-interactive-map />
+    } @placeholder {
+      <section class="map-loading" aria-live="polite">
+        <span>{{ text('INTERACTIVE MAP', 'แผนที่แบบโต้ตอบ') }}</span>
+        <h2>{{ text('OpenStreetMap destinations', 'สถานที่ท่องเที่ยวบน OpenStreetMap') }}</h2>
+        <p>{{ text('Check current weather conditions before heading out, especially during the rainy season.', 'ตรวจสภาพอากาศก่อนออกเดินทาง โดยเฉพาะในช่วงฤดูฝน') }}</p>
+      </section>
+    } @error {
+      <p class="map-loading__error" role="alert">{{ text('Could not load the interactive map. Please refresh and try again.', 'โหลดแผนที่ไม่ได้ โปรดลองรีเฟรชหน้าเว็บ') }}</p>
+    }
+  </div>
+
+  <section class="boat-routes-section section-wrap" id="boat-routes" aria-labelledby="boat-routes-title">
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">{{ text('GETTING AROUND THE SOUTH', 'การเดินทางในภาคใต้') }}</span>
+        <h2 id="boat-routes-title">{{ text('Boat', 'เส้นทาง') }} <em>{{ text('routes', 'เรือ') }}</em></h2>
+      </div>
+      <label class="boat-route-search">
+        <span class="visually-hidden">{{ text('Filter boat routes', 'ค้นหาเส้นทางเรือ') }}</span>
+        <input type="search" [placeholder]="text('Search pier or destination', 'ค้นหาท่าเรือหรือสถานที่')" [value]="boatRouteSearch()" (input)="updateBoatRouteSearch($event)" />
+      </label>
+    </div>
+    @if (boatRoutesLoading()) {
+      <p class="recommendation-status" role="status">{{ text('Loading boat routes…', 'กำลังโหลดเส้นทางเรือ…') }}</p>
+      } @else if (boatRoutesError()) {
+      <div class="recommendation-error" role="alert">
+        <span>{{ text('Boat route information is unavailable right now.', 'ยังโหลดข้อมูลเส้นทางเรือไม่ได้ในขณะนี้') }}</span>
+        <button type="button" (click)="refreshBoatRoutes()">{{ text('Retry', 'ลองอีกครั้ง') }}</button>
+      </div>
+    } @else if (visibleBoatRoutes().length) {
+      <div class="boat-route-grid">
+        @for (route of visibleBoatRoutes(); track route.id) {
+          <article class="boat-route-card">
+            <div class="boat-route-card__heading">
+              <span aria-hidden="true">-&gt;</span>
+              <small>{{ route.transportType }}</small>
+            </div>
+            <h3>{{ route.departure }} <span aria-hidden="true">-&gt;</span> {{ route.destination }}</h3>
+            <dl>
+              <div><dt>{{ text('Departure', 'เวลาออกเดินทาง') }}</dt><dd>{{ route.departureTime }}</dd></div>
+              <div><dt>{{ text('Est. duration', 'ระยะเวลาโดยประมาณ') }}</dt><dd>{{ route.estimatedDuration }}</dd></div>
+              <div><dt>{{ text('Indicative fare', 'ค่าโดยสารโดยประมาณ') }}</dt><dd>{{ route.price }}</dd></div>
+            </dl>
+            <p>{{ text('Listed operator:', 'ผู้ให้บริการ:') }} {{ route.operator }}</p>
+            <a [href]="boatRouteSearchUrl(route)" target="_blank" rel="noopener noreferrer">{{ text('Find pier information', 'ค้นหาข้อมูลท่าเรือ') }} -&gt;</a>
+          </article>
+        }
+      </div>
+      <p class="trip-plan-note">{{ text('Schedules, operators, and fares are sample planning information and are not booking or live availability. Confirm directly with local operators.', 'ตารางเวลา ผู้ให้บริการ และค่าโดยสารเป็นข้อมูลตัวอย่างสำหรับวางแผน ไม่ใช่ข้อมูลจองหรือสถานะเรียลไทม์ โปรดยืนยันกับผู้ให้บริการโดยตรง') }}</p>
+    } @else {
+      <div class="trip-empty">
+        <h3>{{ text('No routes match that search', 'ไม่พบเส้นทางที่ตรงกับคำค้น') }}</h3>
+        <p>{{ text('Try searching for another pier, destination, or transport type.', 'ลองค้นหาท่าเรือ สถานที่ หรือประเภทยานพาหนะอื่น') }}</p>
+      </div>
+    }
+  </section>
+
+  <section class="trip-section" aria-labelledby="trip-title">
+    <img
+      class="trip-section__art"
+      [src]="tripImage.url"
+      [srcset]="responsiveImageSrcset(tripImage.url)"
+      sizes="100vw"
+      alt=""
+      loading="lazy"
+      decoding="async"
+      (error)="handleImageError($event, tripImage.fallbackUrl)"
+    />
+    <div class="trip-section__content">
+      <span class="section-kicker">{{ text('MAKE IT YOURS', 'ออกแบบทริปในแบบคุณ') }}</span>
+      <h2 id="trip-title">{{ text('Your Southern Thailand story', 'เรื่องราวเที่ยวภาคใต้') }}<br /><em>{{ text('starts here.', 'เริ่มต้นที่นี่') }}</em></h2>
+      <p>{{ text('Save the places you love and turn them into a trip worth remembering.', 'บันทึกสถานที่ที่ชอบแล้วจัดเป็นทริปที่น่าจดจำ') }}</p>
+      <button class="button button--light" type="button" (click)="startTrip()">
+        {{ text('Plan My Southern Thailand Trip', 'วางแผนเที่ยวภาคใต้') }} <span aria-hidden="true">-&gt;</span>
+      </button>
+      <span class="trip-photo-credit">
+        {{ text('Background photo:', 'ภาพพื้นหลัง:') }}
+        <a [href]="tripImage.sourceUrl" target="_blank" rel="noopener noreferrer">{{ tripImage.photographer }}</a>
+        · <a [href]="tripImage.licenseUrl" target="_blank" rel="noopener noreferrer">{{ tripImage.license }}</a>
+      </span>
+    </div>
+  </section>
+
+  <section class="trip-planner section-wrap" id="trip-planner" aria-labelledby="trip-plan-heading">
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">{{ text('YOUR ITINERARY, YOUR PACE', 'แผนการเดินทางในจังหวะของคุณ') }}</span>
+        <h2 id="trip-plan-heading">{{ text('Plan your', 'วางแผน') }} <em>{{ text('trip', 'ทริป') }}</em></h2>
+      </div>
+      @if (tripPlanService.plan().stops.length) {
+        <button class="trip-clear" type="button" (click)="tripPlanService.clearPlan()">{{ text('Clear plan', 'ล้างแผน') }}</button>
+      }
+    </div>
+
+    <div class="trip-controls">
+      <label>
+        {{ text('Start date', 'วันเริ่มต้น') }}
+        <input
+          type="date"
+          [value]="tripPlanService.plan().startDate"
+          [min]="todayDate()"
+          (change)="updateTripStartDate($event)"
+        />
+      </label>
+      <label>
+        {{ text('Trip length', 'ระยะเวลาทริป') }}
+        <select [value]="tripPlanService.plan().durationDays" (change)="updateTripDuration($event)">
+          @for (day of tripDays; track day) {
+            <option [value]="day">{{ day }} {{ day === 1 ? text('day', 'วัน') : text('days', 'วัน') }}</option>
+          }
+        </select>
+      </label>
+      <label class="trip-add">
+        {{ text('Add a destination', 'เพิ่มสถานที่เที่ยว') }}
+        <select [disabled]="availableTripDestinations().length === 0" (change)="addTripStop($event)">
+          <option value="">{{ text('Choose a place…', 'เลือกสถานที่…') }}</option>
+          @for (place of availableTripDestinations(); track place.id) {
+          <option [value]="place.id">{{ placeName(place.name) }} · {{ provinceName(place.province) }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (plannedStops().length) {
+      <ol class="trip-stop-list">
+        @for (stop of plannedStops(); track stop.destinationId) {
+          <li class="trip-stop">
+            <img
+              [src]="stop.place.image.url"
+              [srcset]="responsiveImageSrcset(stop.place.image.url)"
+              sizes="82px"
+              [alt]="stop.place.image.alt"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event, stop.place.image.fallbackUrl)"
+            />
+            <div class="trip-stop__place">
+              <span>{{ provinceName(stop.place.province) }} · {{ placeCategory(stop.place.category) }}</span>
+              <strong>{{ placeName(stop.place.name) }}</strong>
+              <a [routerLink]="['/places', stop.place.id]">{{ text('Destination details', 'รายละเอียดสถานที่') }} -&gt;</a>
+            </div>
+            <label class="trip-stop__day">
+              {{ text('Visit on', 'วันที่ไป') }}
+              <select [value]="stop.day" (change)="assignTripStopDay($event, stop.destinationId)">
+                @for (day of tripDays.slice(0, tripPlanService.plan().durationDays); track day) {
+                  <option [value]="day">{{ text('Day', 'วันที่') }} {{ day }}</option>
+                }
+              </select>
+            </label>
+            <button class="trip-stop__remove" type="button" [attr.aria-label]="text('Remove ', 'นำออกจากทริป ') + placeName(stop.place.name)" (click)="tripPlanService.removeStop(stop.destinationId)">{{ text('Remove', 'นำออก') }}</button>
+          </li>
+        }
+      </ol>
+    } @else {
+      <div class="trip-empty">
+        <h3>{{ text('Start building your itinerary', 'เริ่มจัดแผนการเดินทาง') }}</h3>
+        <p>{{ text('Add destinations to organize your Southern Thailand trip by day. Your plan is saved on this device.', 'เพิ่มสถานที่เพื่อจัดทริปภาคใต้แยกตามวัน ระบบจะบันทึกแผนไว้ในอุปกรณ์นี้') }}</p>
+        @if (savedDestinations().length) {
+          <div class="trip-suggestions">
+            <span>{{ text('Quick add saved places:', 'เพิ่มสถานที่ที่บันทึกไว้อย่างรวดเร็ว:') }}</span>
+            @for (place of savedDestinations(); track place.id) {
+              <button type="button" (click)="tripPlanService.addStop(place.id)">{{ text('Add ', 'เพิ่ม ') }}{{ placeName(place.name) }}</button>
+            }
+          </div>
+        }
+      </div>
+    }
+    <p class="trip-plan-note" role="status">{{ text('Your itinerary is saved automatically on this device. Dates and travel times are for planning only.', 'แผนการเดินทางบันทึกอัตโนมัติไว้ในอุปกรณ์นี้ วันที่และเวลาใช้สำหรับวางแผนเท่านั้น') }}</p>
+  </section>
+</main>
+
+<dialog
+  #videoDialog
+  class="video-dialog"
+  [attr.aria-label]="text('Southern Thailand destination video', 'วิดีโอแนะนำสถานที่ท่องเที่ยวภาคใต้')"
+  (click)="closeVideoOnBackdrop($event, videoDialog)"
+  (keydown)="closeVideoOnEscape($event, videoDialog)"
+  (cancel)="clearActiveVideo()"
+  (close)="clearActiveVideo()"
+>
+  <button
+    class="video-dialog__close"
+    type="button"
+    [attr.aria-label]="text('Close video', 'ปิดวิดีโอ')"
+    autofocus
+    (click)="closeVideo(videoDialog)"
+  >ร—</button>
+  @if (activeVideo(); as video) {
+    <div class="video-dialog__content">
+      <div class="video-dialog__player">
+        <iframe
+          [src]="videoEmbedUrl(video)"
+          [title]="video.title"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="video-dialog__details">
+        <span>{{ provinceName(video.province) }} · {{ text('Video by', 'วิดีโอโดย') }} {{ video.channel }}</span>
+        <h2>{{ video.title }}</h2>
+        <p>{{ video.description }}</p>
+        <a [href]="video.sourceUrl" target="_blank" rel="noopener noreferrer">{{ text('Open source on YouTube', 'เปิดวิดีโอต้นฉบับบน YouTube') }} -&gt;</a>
+      </div>
+    </div>
+  }
+</dialog>
+
+<footer class="site-footer">
+  <a class="brand brand--footer" href="#">
+    <span class="brand__mark" aria-hidden="true">A</span>
+    <span class="brand__name">SOUTHERN <strong>THAILAND TRAVEL</strong></span>
+  </a>
+  <p>{{ text('Discover · Plan · Explore Southern Thailand', 'ค้นพบ · วางแผน · ท่องเที่ยวภาคใต้') }}</p>
+  <span>© 2026 Southern Thailand Travel · {{ text('Weather:', 'สภาพอากาศ:') }} <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>. {{ text('Forecasts are indicative; follow local advisories.', 'พยากรณ์มีไว้ประกอบการวางแผน โปรดติดตามประกาศในพื้นที่') }}</span>
+</footer>
+}
+<router-outlet />
+
+
+
+

@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-andaman_db}
+      POSTGRES_USER: ${POSTGRES_USER:-andaman}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Copy .env.example to .env and set POSTGRES_PASSWORD}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./database/migrations/002_local_events.sql:/docker-entrypoint-initdb.d/02-local-events.sql:ro
+      - ./database/seeds/003_local_events_mock.sql:/docker-entrypoint-initdb.d/03-local-events-mock.sql:ro
+      - ./database/migrations/004_user_passwords.sql:/docker-entrypoint-initdb.d/04-user-passwords.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DB:-andaman_db}
+      PGUSER: ${POSTGRES_USER:-andaman}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Copy .env.example to .env and set POSTGRES_PASSWORD}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-}
+      AUTH_JWT_ISSUER: ${AUTH_JWT_ISSUER:-}
+      AUTH_JWT_AUDIENCE: ${AUTH_JWT_AUDIENCE:-}
+      FRONTEND_URL: "${FRONTEND_ORIGIN:-http://localhost:4200,http://127.0.0.1:4200,http://localhost:4300,http://127.0.0.1:4300}"
+      WEATHER_REQUEST_TIMEOUT_MS: ${WEATHER_REQUEST_TIMEOUT_MS:-8000}
+      WEATHER_CACHE_TTL_MS: ${WEATHER_CACHE_TTL_MS:-600000}
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-3001}:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-4200}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+
+  nodered:
+    image: nodered/node-red:4.1
+    profiles: ["tools"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${NODERED_PORT:-1880}:1880"
+    volumes:
+      - ./nodered:/data
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  postgres-data:
+
+
